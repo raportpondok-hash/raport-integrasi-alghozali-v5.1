@@ -1286,9 +1286,14 @@ export default function App() {
             <SchoolLogo size={38} className="drop-shadow" />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-bold text-sm sm:text-base tracking-wide text-white">
-                  {schoolType === 'fullday' ? 'Raport Al-Ghozali' : 'Kasyfud Darajat'}
-                </h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="font-bold text-sm sm:text-base tracking-wide text-white">
+                    {schoolType === 'fullday' ? 'Raport Al-Ghozali' : 'Kasyfud Darajat'}
+                  </h1>
+                  <span className="text-[9px] sm:text-[10px] bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 px-1.5 py-0.5 rounded-md font-extrabold tracking-wider">
+                    V5.1.0
+                  </span>
+                </div>
                 {schoolType === 'mukim' ? (
                   <span className="font-arabic text-emerald-400 font-bold text-base leading-none">
                     (كَشْفُ الدَّرَجَاتِ)
