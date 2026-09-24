@@ -1,5 +1,5 @@
 import { AuthUser, ClassItem, JenjangUnit, UserRole, SchoolType } from '../types';
-import { getStoredSheetsUrl } from '../services/googleSheetsService';
+import { getStoredSheetsUrl } from '../services/storageConfig';
 import {
   getTeacherProfiles,
   findTeachersForSubjectAndClass,
