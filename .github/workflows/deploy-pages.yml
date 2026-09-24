@@ -1,4 +1,4 @@
-name: Deploy V5 frontend
+name: Deploy RAPORT PONDOK V5.1
 
 on:
   push:
