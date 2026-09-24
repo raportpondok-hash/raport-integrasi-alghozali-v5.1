@@ -1,0 +1,7 @@
+{
+  "name": "Kasyfud Darajat - Raport Pondok Modern Al-Ghozali",
+  "description": "Aplikasi Cetak Raport Kasyfud Darajat, Rekapitulasi Nilai & Visualisasi Tren Akademik, Sinkronisasi Google Sheets & Drive, Filter Siswa Kelas Binaan Wali Kelas, Muatan Kurikulum, dan Database Guru Pondok Modern Al-Ghozali",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

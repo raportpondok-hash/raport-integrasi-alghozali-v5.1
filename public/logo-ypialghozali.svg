@@ -1,0 +1,299 @@
+<svg
+  viewBox="0 0 200 205"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  class="w-full h-full select-none"
+>
+  <!-- ================= 1. PENTAGON EMBLEM (OUTER & INNER) ================= -->
+  <!-- Outer Deep Green Pentagon -->
+  <path
+    d="M 100 4 L 198 75 L 162 198 L 38 198 L 2 75 Z"
+    fill="#0f592f"
+  />
+
+  <!-- White Gap -->
+  <path
+    d="M 100 8 L 193 76 L 158 194 L 42 194 L 7 76 Z"
+    fill="#ffffff"
+  />
+
+  <!-- Inner Deep Green Line -->
+  <path
+    d="M 100 11 L 190 77 L 155 191 L 45 191 L 10 77 Z"
+    fill="#0f592f"
+  />
+
+  <!-- Inner Light-Green Pentagon Field (Pure solid light green) -->
+  <path
+    d="M 100 13 L 187 78 L 153 189 L 47 189 L 13 78 Z"
+    fill="#d5f0a8"
+  />
+
+  <!-- ================= 2. TOP FIVE-POINTED STAR ================= -->
+  <polygon
+    points="100,28 103.8,39.5 116,39.5 106.1,46.7 109.9,58.2 100,51 90.1,58.2 93.9,46.7 84,39.5 96.2,39.5"
+    fill="#0f592f"
+  />
+
+  <!-- ================= 3. VERTICAL PEN (KALAM) & LANCE ================= -->
+  <!-- Upper Blade/Nib pointing towards star -->
+  <path
+    d="M 100 52 C 98.2 68 95 86 95 108 L 105 108 C 105 86 101.8 68 100 52 Z"
+    fill="#0f592f"
+  />
+  <!-- Nib center spine highlight -->
+  <line x1="100" y1="56" x2="100" y2="108" stroke="#167a42" stroke-width="0.8" />
+
+  <!-- Golden Ring at center of Pen -->
+  <circle cx="100" cy="114" r="5" fill="#ffd700" stroke="#0f592f" stroke-width="1" />
+  <circle cx="100" cy="114" r="2.2" fill="#0f592f" />
+
+  <!-- Lower Pen shaft under book -->
+  <path
+    d="M 97.5 125 L 102.5 125 L 102.5 137 L 97.5 137 Z"
+    fill="#0f592f"
+  />
+  <path
+    d="M 94 133 L 106 133 L 100 138 Z"
+    fill="#0f592f"
+  />
+
+  <!-- Double Golden Knob / Base at bottom of pen -->
+  <g>
+    <rect x="92" y="137" width="16" height="7.5" rx="3.75" fill="#ffd700" stroke="#0f592f" stroke-width="1" />
+    <circle cx="95" cy="140.75" r="3.2" fill="#ffd700" stroke="#0f592f" stroke-width="0.8" />
+    <circle cx="105" cy="140.75" r="3.2" fill="#ffd700" stroke="#0f592f" stroke-width="0.8" />
+    <line x1="100" y1="137" x2="100" y2="144.5" stroke="#0f592f" stroke-width="0.8" />
+  </g>
+
+  <!-- ================= 4. OPEN BOOK (KITAB) IN CENTER ================= -->
+  <!-- Book Shadow -->
+  <path
+    d="M 69 95 C 82 89 96 91 100 97 C 104 91 118 89 131 95 L 128 131 C 115 124 104 126 100 132 C 96 126 85 124 72 131 Z"
+    fill="#cbd5e1"
+  />
+  <!-- Book White Pages -->
+  <path
+    d="M 68 93 C 82 87 96 89 100 95 C 104 89 118 87 132 93 L 129 128 C 116 122 104 124 100 130 C 96 124 84 122 71 128 Z"
+    fill="#ffffff"
+    stroke="#0f592f"
+    stroke-width="1.2"
+  />
+  <!-- Book Spine Center Line -->
+  <line x1="100" y1="95" x2="100" y2="130" stroke="#0f592f" stroke-width="1.2" />
+
+  <!-- Left Page Text Lines (Green Dashes) -->
+  <g stroke="#0f592f" stroke-width="1" stroke-linecap="round" opacity="0.85">
+    <line x1="75" y1="96" x2="94" y2="94" stroke-dasharray="3,2.5" />
+    <line x1="74" y1="102" x2="94" y2="100" stroke-dasharray="3,2.5" />
+    <line x1="75" y1="108" x2="94" y2="106" stroke-dasharray="3,2.5" />
+    <line x1="76" y1="114" x2="94" y2="112" stroke-dasharray="3,2.5" />
+    <line x1="77" y1="120" x2="94" y2="118" stroke-dasharray="3,2.5" />
+
+    <!-- Right Page Text Lines (Green Dashes) -->
+    <line x1="106" y1="94" x2="125" y2="96" stroke-dasharray="3,2.5" />
+    <line x1="106" y1="100" x2="126" y2="102" stroke-dasharray="3,2.5" />
+    <line x1="106" y1="106" x2="125" y2="108" stroke-dasharray="3,2.5" />
+    <line x1="106" y1="112" x2="124" y2="114" stroke-dasharray="3,2.5" />
+    <line x1="106" y1="118" x2="123" y2="120" stroke-dasharray="3,2.5" />
+  </g>
+
+  <!-- ================= 5. LEFT WREATH (PADI / GREEN LEAVES) ================= -->
+  <!-- Curved stem -->
+  <path
+    d="M 68 158 C 45 142 38 108 52 74 C 58 60 70 50 82 48"
+    fill="none"
+    stroke="#0f592f"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  />
+  <!-- Leaf pairs ascending -->
+  <g fill="#0f592f">
+    <ellipse cx="64" cy="151" rx="5" ry="2.4" transform="rotate(-25 64 151)" />
+    <ellipse cx="57" cy="144" rx="5.2" ry="2.4" transform="rotate(-32 57 144)" />
+    <ellipse cx="51" cy="136" rx="5.4" ry="2.5" transform="rotate(-40 51 136)" />
+    <ellipse cx="46" cy="127" rx="5.5" ry="2.5" transform="rotate(-50 46 127)" />
+    <ellipse cx="43" cy="117" rx="5.5" ry="2.5" transform="rotate(-62 43 117)" />
+    <ellipse cx="42" cy="106" rx="5.5" ry="2.5" transform="rotate(-75 42 106)" />
+    <ellipse cx="43" cy="95" rx="5.5" ry="2.5" transform="rotate(-90 43 95)" />
+    <ellipse cx="46" cy="84" rx="5.5" ry="2.5" transform="rotate(-105 46 84)" />
+    <ellipse cx="51" cy="74" rx="5.2" ry="2.5" transform="rotate(-120 51 74)" />
+    <ellipse cx="58" cy="65" rx="5" ry="2.4" transform="rotate(-135 58 65)" />
+    <ellipse cx="66" cy="58" rx="4.8" ry="2.3" transform="rotate(-150 66 58)" />
+    <ellipse cx="75" cy="53" rx="4.5" ry="2.2" transform="rotate(-165 75 53)" />
+    <ellipse cx="83" cy="50" rx="4.2" ry="2" transform="rotate(-175 83 50)" />
+
+    <!-- Inner leaf pairs for fullness -->
+    <ellipse cx="60" cy="138" rx="4" ry="2" transform="rotate(20 60 138)" />
+    <ellipse cx="53" cy="124" rx="4" ry="2" transform="rotate(10 53 124)" />
+    <ellipse cx="50" cy="109" rx="4" ry="2" transform="rotate(-5 50 109)" />
+    <ellipse cx="51" cy="95" rx="4" ry="2" transform="rotate(-20 51 95)" />
+    <ellipse cx="56" cy="82" rx="4" ry="2" transform="rotate(-35 56 82)" />
+    <ellipse cx="64" cy="71" rx="3.8" ry="1.9" transform="rotate(-50 64 71)" />
+    <ellipse cx="72" cy="63" rx="3.5" ry="1.8" transform="rotate(-65 72 63)" />
+  </g>
+
+  <!-- ================= 6. RIGHT WREATH (KAPAS / COTTON BOLLS) ================= -->
+  <!-- Curved stem -->
+  <path
+    d="M 132 158 C 155 142 162 108 148 74 C 142 60 130 50 118 48"
+    fill="none"
+    stroke="#0f592f"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  />
+
+  <!-- Cotton Bolls (Green calyx base + Fluffy white flower) -->
+  <g transform="translate(132, 149) scale(0.9)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.6" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2" fill="#ffffff" />
+  </g>
+  <g transform="translate(141, 141) scale(0.92)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.7" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2" fill="#ffffff" />
+  </g>
+  <g transform="translate(148, 131) scale(0.95)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.8" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2.1" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2.1" fill="#ffffff" />
+  </g>
+  <g transform="translate(153, 120) scale(0.98)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.9" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2.2" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2.2" fill="#ffffff" />
+  </g>
+  <g transform="translate(156, 108) scale(1)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="4" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2.2" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2.2" fill="#ffffff" />
+  </g>
+  <g transform="translate(156, 96) scale(1)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="4" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2.2" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2.2" fill="#ffffff" />
+  </g>
+  <g transform="translate(154, 84) scale(0.98)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.9" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2.2" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2.2" fill="#ffffff" />
+  </g>
+  <g transform="translate(149, 73) scale(0.95)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.8" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2.1" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2.1" fill="#ffffff" />
+  </g>
+  <g transform="translate(142, 63) scale(0.92)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.6" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="2" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="2" fill="#ffffff" />
+  </g>
+  <g transform="translate(133, 55) scale(0.88)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.5" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="1.9" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="1.9" fill="#ffffff" />
+  </g>
+  <g transform="translate(123, 50) scale(0.82)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.3" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="1.8" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="1.8" fill="#ffffff" />
+  </g>
+  <g transform="translate(114, 48) scale(0.78)">
+    <path d="M-3,3 L0,6 L3,3 L2,-2 L-2,-2 Z" fill="#0f592f" />
+    <circle cx="0" cy="0" r="3.2" fill="#ffffff" stroke="#94a3b8" stroke-width="0.4" />
+    <circle cx="-1.5" cy="-0.5" r="1.7" fill="#ffffff" />
+    <circle cx="1.5" cy="-0.5" r="1.7" fill="#ffffff" />
+  </g>
+
+  <!-- ================= 7. CROSSING STEMS & THREE GOLDEN LINKS ================= -->
+  <!-- Crossing branch stems -->
+  <path
+    d="M 60 148 Q 100 170 140 148"
+    fill="none"
+    stroke="#0f592f"
+    stroke-width="1.8"
+  />
+  <path
+    d="M 68 158 Q 100 174 132 158"
+    fill="none"
+    stroke="#0f592f"
+    stroke-width="1.8"
+  />
+
+  <!-- Three Connected Golden Rings / Chain Links in center -->
+  <g>
+    <rect x="90" y="157" width="5.5" height="9" rx="2.5" fill="#ffd700" stroke="#0f592f" stroke-width="0.9" />
+    <rect x="91.5" y="159" width="2.5" height="5" rx="1.2" fill="#d5f0a8" />
+
+    <rect x="97" y="157" width="6" height="9" rx="2.5" fill="#ffd700" stroke="#0f592f" stroke-width="0.9" />
+    <rect x="98.5" y="159" width="3" height="5" rx="1.2" fill="#d5f0a8" />
+
+    <rect x="104.5" y="157" width="5.5" height="9" rx="2.5" fill="#ffd700" stroke="#0f592f" stroke-width="0.9" />
+    <rect x="106" y="159" width="2.5" height="5" rx="1.2" fill="#d5f0a8" />
+  </g>
+
+  <!-- ================= 8. YELLOW RIBBON BANNER AT BOTTOM ================= -->
+  <!-- Left folded ribbon end -->
+  <path
+    d="M 43 148 L 35 152 L 40 162 L 48 160 L 45 150 Z"
+    fill="#ffd000"
+    stroke="#0f592f"
+    stroke-width="1"
+  />
+  <!-- Left swallowtail notch -->
+  <path
+    d="M 35 152 L 45 150 L 42 168 L 32 166 L 36 159 Z"
+    fill="#ffea00"
+    stroke="#0f592f"
+    stroke-width="1"
+  />
+
+  <!-- Right folded ribbon end -->
+  <path
+    d="M 157 148 L 165 152 L 160 162 L 152 160 L 155 150 Z"
+    fill="#ffd000"
+    stroke="#0f592f"
+    stroke-width="1"
+  />
+  <!-- Right swallowtail notch -->
+  <path
+    d="M 165 152 L 155 150 L 158 168 L 168 166 L 164 159 Z"
+    fill="#ffea00"
+    stroke="#0f592f"
+    stroke-width="1"
+  />
+
+  <!-- Main Curved Banner Body -->
+  <path
+    d="M 40 148 Q 100 178 160 148 L 155 162 Q 100 192 45 162 Z"
+    fill="#ffea00"
+    stroke="#0f592f"
+    stroke-width="1.2"
+  />
+
+  <!-- Banner Text: YPI AL-GHOZALI -->
+  <text
+    x="100"
+    y="161.5"
+    text-anchor="middle"
+    fill="#0f592f"
+    font-weight="900"
+    font-size="9.2"
+    letter-spacing="0.8"
+    font-family="'Arial Black', 'Trebuchet MS', sans-serif"
+  >
+    YPI AL-GHOZALI
+  </text>
+</svg>
