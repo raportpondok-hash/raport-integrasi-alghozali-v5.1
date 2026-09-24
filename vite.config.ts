@@ -18,10 +18,12 @@ export default defineConfig(() => ({
   },
   build: {
     chunkSizeWarningLimit: 1500,
-    // v5.1: do not force application/vendor manual chunks.
-    // The previous manualChunks layout could expose module-initialization/TDZ
-    // failures in the large circular dependency graph. Let Rollup determine
-    // safe chunk boundaries automatically.
+    // v5.1.1 diagnostic/stability build: keep module boundaries intact and
+    // disable production minification while we eliminate the remaining
+    // runtime TDZ (Temporal Dead Zone) failure. Source maps make any future
+    // production stack trace point back to the real TS/TSX source.
+    minify: false,
+    sourcemap: true,
   },
   server: {
     host: '0.0.0.0',
