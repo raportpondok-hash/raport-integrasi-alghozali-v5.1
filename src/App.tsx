@@ -1006,7 +1006,7 @@ export default function App() {
         localStorage.setItem('kasyfud_darajat_active_school_type', userSchoolType);
       } catch {}
       setSheetsUrl(getStoredSheetsUrl());
-      setLastSyncTime(getStoredLastSync();
+      setLastSyncTime(getStoredLastSync());
     }
 
     const initialUnit: JenjangUnit = 'SMA';
