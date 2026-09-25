@@ -179,22 +179,22 @@ export async function saveSingleScoreToSheets(
  * Legacy UI compatibility. V5.1 deliberately does not perform bulk score writes:
  * every grade must go through the same single-score validation path.
  */
-export async function batchSyncAllToSheets(): Promise<GoogleSheetsSyncResult> {
+export async function batchSyncAllToSheets(_webAppUrl?: string, _students?: any[], _onProgress?: (progress: { current: number; total: number; studentName: string; success: boolean }) => void): Promise<GoogleSheetsSyncResult> {
   return { success: false, message: 'Sinkronisasi massal dinonaktifkan pada V5.1. Gunakan input nilai per sel.' };
 }
 
-export async function saveMultipleScoresToSheets(): Promise<GoogleSheetsSyncResult> {
+export async function saveMultipleScoresToSheets(_webAppUrl?: string, _data?: any): Promise<GoogleSheetsSyncResult> {
   return { success: false, message: 'Penyimpanan massal dinonaktifkan pada V5.1. Gunakan input nilai per sel.' };
 }
 
-export async function initAllClassSheetsInGoogleSheets(): Promise<GoogleSheetsSyncResult> {
+export async function initAllClassSheetsInGoogleSheets(_webAppUrl?: string, _classes?: any[]): Promise<GoogleSheetsSyncResult> {
   return { success: false, message: 'Struktur Spreadsheet V5.1 dikelola dari workbook kelas, bukan dibuat dari frontend.' };
 }
 
-export async function fetchAllSikapFromSheets(): Promise<{ success: boolean; message: string; sikap?: Record<string, { classId: string; sikap: string }> }> {
+export async function fetchAllSikapFromSheets(_webAppUrl?: string): Promise<{ success: boolean; message: string; sikap?: Record<string, { classId: string; sikap: string }> }> {
   return { success: false, message: 'Modul sikap tidak termasuk alur input nilai V5.1.' };
 }
 
-export async function saveMultipleSikapToSheets(): Promise<GoogleSheetsSyncResult> {
+export async function saveMultipleSikapToSheets(_webAppUrl?: string, _items?: any[]): Promise<GoogleSheetsSyncResult> {
   return { success: false, message: 'Modul sikap tidak termasuk alur input nilai V5.1.' };
 }
