@@ -190,19 +190,7 @@ export default function App() {
   const [selectedCol, setSelectedCol] = useState<SelectedColumnKey>('no');
 
   // Google Sheets Cloud Sync State (Multi-Device)
-  const [sheetsUrl, setSheetsUrl] = useState<string>(() => {
-    const initialType = ((): SchoolType => {
-      const savedUser = getSavedAuthUser();
-      if (savedUser?.schoolType) return savedUser.schoolType;
-      try {
-        const saved = localStorage.getItem('kasyfud_darajat_active_school_type');
-        if (saved === 'fullday' || saved === 'mukim') return saved;
-      } catch {}
-      return 'mukim';
-    })();
-    const savedUser = getSavedAuthUser();
-    return getStoredSheetsUrl();
-  });
+  const [sheetsUrl, setSheetsUrl] = useState<string>(() => getStoredSheetsUrl());
   const [isAutoSyncEnabled, setIsAutoSyncEnabled] = useState<boolean>(() => {
     try {
       return localStorage.getItem(STORAGE_KEY_SHEETS_AUTOSYNC) !== 'false';
@@ -210,18 +198,7 @@ export default function App() {
       return true;
     }
   });
-  const [lastSyncTime, setLastSyncTime] = useState<string>(() => {
-    const initialType = ((): SchoolType => {
-      const savedUser = getSavedAuthUser();
-      if (savedUser?.schoolType) return savedUser.schoolType;
-      try {
-        const saved = localStorage.getItem('kasyfud_darajat_active_school_type');
-        if (saved === 'fullday' || saved === 'mukim') return saved;
-      } catch {}
-      return 'mukim';
-    })();
-    return getStoredLastSync();
-  });
+  const [lastSyncTime, setLastSyncTime] = useState<string>(() => getStoredLastSync());
   const [isSyncModalOpen, setIsSyncModalOpen] = useState<boolean>(false);
   const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'synced' | 'error'>('idle');
