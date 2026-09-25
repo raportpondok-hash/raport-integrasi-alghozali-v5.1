@@ -9,7 +9,7 @@ interface SettingsModalProps {
   onClose: () => void;
   config: SchoolConfig;
   onSave: (newConfig: SchoolConfig) => void;
-  isAdmin?: boolean;
+  adminAccess?: boolean;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -17,7 +17,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   config,
   onSave,
-  isAdmin = false,
+  adminAccess = false,
 }) => {
   const [formData, setFormData] = useState<SchoolConfig>(config);
   const [adminPinInput, setAdminPinInput] = useState<string>('');
