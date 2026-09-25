@@ -44,6 +44,7 @@ import { AiAuditModal } from './components/AiAuditModal';
 import {
   saveSingleScoreToSheets,
   fetchAllScoresFromSheets,
+  fetchScoresForClassFromSheets,
   STORAGE_KEY_SHEETS_URL,
   STORAGE_KEY_SHEETS_AUTOSYNC,
   STORAGE_KEY_SHEETS_LAST_SYNC,
@@ -174,8 +175,14 @@ export default function App() {
   // Active subject ID for teacher grading e.g. 's1' (Tamrin Lughoh)
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('s1');
 
-  // Persistence via localStorage with fallback to initial data
-  const [students, setStudents] = useState<StudentRecord[]>(() => {
+  // NILAI BUKAN DATA FRONTEND: hanya identitas siswa yang dimuat dari master.
+  // Nilai selalu kosong saat aplikasi/reload dibuka dan diambil ulang dari Spreadsheet
+  // ketika kelas dibuka.
+  const [students, setStudents] = useState<StudentRecord[]>(() =>
+    INITIAL_STUDENTS.map((s) => ({ ...s, scores: {} }))
+  );
+  /*
+  const legacyStudentsState = (() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_STUDENTS);
       if (saved) {
@@ -324,7 +331,8 @@ export default function App() {
       // ignore
     }
     return INITIAL_STUDENTS;
-  });
+  })();
+  */
 
   const [config, setConfig] = useState<SchoolConfig>(() => {
     const defaultWali = getWaliKelasForClass('1a') || 'AMALIA NUR FARHIFA, S.Pd.';
@@ -587,15 +595,7 @@ export default function App() {
     }
   }, [selectedClassId, classes]);
 
-  // Save to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_STUDENTS, JSON.stringify(students));
-    } catch {
-      // ignore
-    }
-  }, [students]);
-
+  // Nilai tidak pernah disimpan ke localStorage. Google Spreadsheet adalah source of truth.
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classes));
@@ -968,81 +968,76 @@ export default function App() {
     });
   };
 
-  // Tarik data nilai dari Google Spreadsheet saat pertama kali buka aplikasi & interval santai 5 menit
+  // SERVER-SOURCE-OF-TRUTH: nilai dipanggil ulang setiap kali kelas dibuka/dipilih.
+  // Tidak ada polling dan tidak ada cache nilai di browser.
   useEffect(() => {
-    if (!currentUser || !sheetsUrl || !sheetsUrl.trim().startsWith('http')) return;
+    if (!currentUser || !sheetsUrl || !sheetsUrl.trim().startsWith('http') || !selectedClassId) return;
 
-    const pullLatestScores = () => {
-      setSyncStatus('syncing');
-      fetchAllScoresFromSheets(sheetsUrl)
-        .then((res) => {
-          if (res.success && res.studentsScores && Object.keys(res.studentsScores).length > 0) {
-            handleApplyScoresFromSheets(res.studentsScores);
-          } else {
-            setSyncStatus('synced');
-          }
-        })
-        .catch(() => {
+    let cancelled = false;
+    setStudents((prev) => prev.map((s) =>
+      (s.classId || '') === selectedClassId ? { ...s, scores: {} } : s
+    ));
+    setSyncStatus('syncing');
+
+    fetchScoresForClassFromSheets(sheetsUrl, selectedClassId)
+      .then((res) => {
+        if (cancelled) return;
+        if (res.success) {
+          handleApplyScoresFromSheets(res.studentsScores || {});
+          setSyncStatus('synced');
+        } else {
           setSyncStatus('error');
-        });
-    };
-
-    // 1. Ambil data saat awal mount
-    pullLatestScores();
-
-    // 2. Interval berkala santai 5 menit (300.000 ms) agar server Google tidak banjir request
-    const intervalId = setInterval(pullLatestScores, 300000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [sheetsUrl]);
-
-  const handleUpdateScore = (studentId: string, subjectId: string, value: number) => {
-    // 1. Update UI lokal seketika (0 ms latency, layar tidak freeze!)
-    setStudents((prev) =>
-      prev.map((s) => {
-        if (s.id !== studentId) return s;
-        return {
-          ...s,
-          scores: {
-            ...s.scores,
-            [subjectId]: value,
-          },
-        };
-      })
-    );
-
-    // 2. Masukkan ke antrean debounced untuk sinkronisasi Google Sheets
-    if (currentUser && sheetsUrl && isAutoSyncEnabled) {
-      const targetStudent = students.find((s) => s.id === studentId);
-      if (targetStudent) {
-        const key = `${studentId}-${subjectId}`;
-        pendingSyncQueueRef.current.set(key, {
-          studentId: targetStudent.id,
-          studentNo: targetStudent.no || 0,
-          classId: targetStudent.classId || selectedClassId,
-          className:
-            classes.find((c) => c.id === (targetStudent.classId || selectedClassId))?.nameLatin ||
-            targetStudent.classId ||
-            selectedClassId,
-          studentName: targetStudent.name,
-          nisn: targetStudent.nisn || '',
-          subjectId,
-          subjectName:
-            currentClassSubjects.find((subject) => subject.id === subjectId)?.nameId ||
-            subjectId,
-          score: value,
-        });
-
-        // Debounce 1.5 detik setelah pengguna selesai mengetik
-        if (syncDebounceTimerRef.current) {
-          clearTimeout(syncDebounceTimerRef.current);
         }
-        syncDebounceTimerRef.current = setTimeout(() => {
-          flushPendingSyncQueue();
-        }, 1500);
+      })
+      .catch(() => {
+        if (!cancelled) setSyncStatus('error');
+      });
+
+    return () => { cancelled = true; };
+  }, [sheetsUrl, selectedClassId, currentUser?.role]);
+
+  const handleUpdateScore = async (studentId: string, subjectId: string, value: number) => {
+    // NILAI TIDAK DITULIS KE STATE FRONTEND.
+    // Satu-satunya write adalah ke Google Spreadsheet. Setelah berhasil,
+    // tampilan tetap kosong; saat kelas dibuka kembali, nilai dipanggil lagi dari server.
+    if (!currentUser || !sheetsUrl) {
+      setSyncStatus('error');
+      return;
+    }
+
+    const targetStudent = students.find((s) => s.id === studentId);
+    const subject = currentClassSubjects.find((s) => s.id === subjectId);
+    if (!targetStudent || !subject) return;
+
+    setSyncStatus('syncing');
+    try {
+      const result = await saveSingleScoreToSheets(sheetsUrl, {
+        studentId: targetStudent.id,
+        studentNo: targetStudent.no || 0,
+        classId: targetStudent.classId || selectedClassId,
+        className: classes.find((c) => c.id === (targetStudent.classId || selectedClassId))?.nameLatin || selectedClassId,
+        studentName: targetStudent.name,
+        nisn: targetStudent.nisn || '',
+        subjectId: subject.id,
+        subjectName: subject.nameId,
+        score: value,
+        role: currentUser.role,
+      });
+
+      // Jangan pernah memasukkan nilai hasil save ke state React.
+      // Ini sengaja membuat input kosong setelah tersimpan.
+      setStudents((prev) => prev.map((s) =>
+        s.id === studentId ? { ...s, scores: {} } : s
+      ));
+
+      setSyncStatus(result.success ? 'synced' : 'error');
+      if (result.success) {
+        const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        setLastSyncTime(now);
+        saveStoredLastSync(now, schoolType);
       }
+    } catch {
+      setSyncStatus('error');
     }
   };
 
