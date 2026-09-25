@@ -1407,7 +1407,7 @@ export function getSubjectsForClass(classId: string = '1a'): Subject[] {
       nameId: info.nameId,
       nameAr: info.nameAr,
       category: info.category,
-      kkm: info.kkm || 70,
+      kkm: 40,
     };
   });
 }
@@ -1416,49 +1416,11 @@ export function getSubjectsForClass(classId: string = '1a'): Subject[] {
  * Deterministically generates a realistic score (65 - 94) for a student and subject
  * if no score is explicitly provided in the record.
  */
-function generateDeterministicScore(studentSeedStr: string, subjectId: string): number {
-  let hash = 0;
-  const str = `${studentSeedStr}_${subjectId}`;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0;
-  }
-  const posHash = Math.abs(hash);
-  const base = 70 + (posHash % 16); // 70..85
-  const bonus = (posHash >> 4) % 10; // 0..9
-  return Math.min(96, Math.max(65, base + bonus));
-}
-
-/**
- * Ensures all required subjects for a class have valid numeric scores for the given student,
- * reading from current scores or falling back to legacy keys (s1..s25) or deterministic scores.
- */
 export function ensureStudentScoresForClass(
   rawScores: Record<string, number> = {},
-  classId: string,
-  studentIdOrNisn: string
+  _classId: string,
+  _studentIdOrNisn: string
 ): Record<string, number> {
-  const requiredSubjects = getSubjectsForClass(classId);
-  const updatedScores: Record<string, number> = { ...rawScores };
-
-  requiredSubjects.forEach((sub) => {
-    const info = MASTER_SUBJECTS_CATALOG[sub.nameId];
-    const legacyKey = info?.legacyId;
-
-    const currentVal = updatedScores[sub.id];
-    if (typeof currentVal === 'number' && !isNaN(currentVal) && currentVal > 0) {
-      return;
-    }
-
-    // Try reading from legacy key if present
-    if (legacyKey && typeof updatedScores[legacyKey] === 'number' && !isNaN(updatedScores[legacyKey])) {
-      updatedScores[sub.id] = updatedScores[legacyKey];
-      return;
-    }
-
-    // Generate realistic deterministic grade
-    updatedScores[sub.id] = generateDeterministicScore(studentIdOrNisn, sub.id);
-  });
-
-  return updatedScores;
+  // Template PTS 2026-2027: nilai yang belum diinput harus tetap kosong.
+  return { ...rawScores };
 }
