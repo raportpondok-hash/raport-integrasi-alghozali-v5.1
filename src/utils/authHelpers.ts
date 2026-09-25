@@ -43,7 +43,7 @@ export function setAdminPin(_newPin: string): { success: boolean; message: strin
 export async function verifyAdminPin(enteredPin: string): Promise<boolean> {
   const pin = enteredPin.trim();
   if (!pin) return false;
-  const webAppUrl = getStoredSheetsUrl('mukim', 'SMP');
+  const webAppUrl = getStoredSheetsUrl('mukim', 'SMA');
   if (!webAppUrl) return false;
 
   try {
