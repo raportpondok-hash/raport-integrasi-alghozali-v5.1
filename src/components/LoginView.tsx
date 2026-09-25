@@ -234,23 +234,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSucce
 
               <div className="lg:col-start-2 flex flex-col gap-2 min-w-0">
                 {selectedRole !== 'admin' && (
-                <div className="space-y-1.5 pt-0.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5"><School size={14} className="text-emerald-700" /><span>2. Pilih Jenjang Sekolah</span></label>
-                    <span className="text-[11px] text-emerald-700 font-medium hidden sm:inline">Mapel Kepondokan: TMMIA</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {(['SMP', 'SMA'] as JenjangUnit[]).map((unit) => (
-                      <button key={unit} type="button" onClick={() => setSelectedUnit(unit)} className={`py-2 px-3 rounded-xl border text-center font-bold text-xs transition-all duration-150 flex flex-col items-center justify-center ${selectedUnit === unit ? 'bg-emerald-700 text-white border-emerald-600 shadow-sm ring-1 ring-emerald-400' : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100 hover:border-stone-300'}`}>
-                        <span className="font-bold text-sm">{unit === 'SMP' ? 'Tingkat SMP' : 'Tingkat SMA'}</span>
-                        <span className={`text-[10px] mt-0.5 line-clamp-1 ${selectedUnit === unit ? 'text-emerald-100' : 'text-stone-500'}`}>{unit === 'SMP' ? 'Mukim 1-3 • Full Day VII-IX' : 'Mukim 1-3 Int & 4-6 • Full Day X-XII'}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-                {selectedRole !== 'admin' && (
                 <div className="space-y-2 pt-1">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5"><Users size={14} className="text-emerald-700" /><span>Nama Guru</span></label>
