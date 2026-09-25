@@ -43,7 +43,7 @@ export function setAdminPin(_newPin: string): { success: boolean; message: strin
 export async function verifyAdminPin(enteredPin: string): Promise<boolean> {
   const pin = enteredPin.trim();
   if (!pin) return false;
-  const webAppUrl = getStoredSheetsUrl('mukim', 'SMA');
+  const webAppUrl = getStoredSheetsUrl();
   if (!webAppUrl) return false;
 
   try {
@@ -89,7 +89,7 @@ export function clearTeacherSessionToken(): void {
 export async function verifyTeacherPin(teacherName: string, unit: JenjangUnit, role: Exclude<UserRole, 'admin'>, pin: string): Promise<boolean> {
   const safePin = String(pin || '').trim();
   if (!teacherName.trim() || !safePin) return false;
-  const webAppUrl = getStoredSheetsUrl('mukim', unit === 'TMMIA' ? 'SMA' : unit);
+  const webAppUrl = getStoredSheetsUrl();
   if (!webAppUrl) return false;
   try {
     const response = await fetch(webAppUrl, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'verifyTeacherPin', teacherName, unit, role, pin: safePin }), cache: 'no-store' });
