@@ -6,6 +6,7 @@ import {
   getWaliKelasByJenjang,
   getTeacherAssignmentDetails,
   verifyAdminPin,
+  verifyTeacherPin,
   saveAuthUser,
 } from '../utils/authHelpers';
 import {
@@ -37,6 +38,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSucce
   const [selectedTeacherName, setSelectedTeacherName] = useState<string>('');
   const [teacherSearch, setTeacherSearch] = useState<string>('');
   const [adminPin, setAdminPin] = useState<string>('');
+  const [teacherPin, setTeacherPin] = useState<string>('');
   const [showPin, setShowPin] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -139,6 +141,24 @@ export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSucce
 
     if (!selectedTeacherName) {
       setErrorMessage('Silakan pilih nama guru dari daftar Master Guru.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!teacherPin) {
+      setErrorMessage('Silakan masukkan PIN Guru/Wali.');
+      setIsLoading(false);
+      return;
+    }
+    if (!/^\d{4,12}$/.test(teacherPin)) {
+      setErrorMessage('PIN Guru/Wali harus 4-12 digit.');
+      setIsLoading(false);
+      return;
+    }
+
+    const pinValid = await verifyTeacherPin(selectedTeacherName, selectedUnit, selectedRole, teacherPin);
+    if (!pinValid) {
+      setErrorMessage('PIN Guru/Wali salah atau backend PIN belum dikonfigurasi.');
       setIsLoading(false);
       return;
     }
@@ -248,6 +268,33 @@ export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSucce
                       <span className="shrink-0 text-stone-600">{selectedTeacherDetails.assignedSubjectNames.length} Mapel • {selectedTeacherDetails.totalClassesCount} Kelas</span>
                     </div>
                   )}
+                </div>
+              )}
+
+                {selectedRole !== 'admin' && (
+                <div className="space-y-2 pt-1 animate-fadeIn">
+                  <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <KeyRound size={14} className="text-emerald-700" />
+                    <span>PIN Guru / Wali Kelas</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPin ? 'text' : 'password'}
+                      value={teacherPin}
+                      onChange={(e) => setTeacherPin(e.target.value.replace(/\D/g, '').slice(0, 12))}
+                      placeholder="Masukkan PIN 4-12 digit"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      className="w-full pl-4 pr-12 py-2.5 bg-white border border-stone-300 rounded-xl text-stone-900 font-mono text-base font-bold tracking-widest focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition shadow-sm"
+                    />
+                    <button type="button" onClick={() => setShowPin(!showPin)} className="absolute right-3 top-3 text-stone-400 hover:text-stone-700 transition">
+                      {showPin ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-1 text-[11px] text-stone-500 px-1">
+                    <Lock size={12} className="text-emerald-600" />
+                    PIN diverifikasi di server dan tidak disimpan di frontend.
+                  </div>
                 </div>
               )}
 
