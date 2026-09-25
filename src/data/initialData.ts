@@ -396,7 +396,7 @@ export const INITIAL_SCHOOL_CONFIG: SchoolConfig = {
   placeNameAr: 'بغونتونج سندور',
   dateMasehi: '10 Oktober 2026',
   dateHijri: '14 Rabiul Awwal 1448',
-  dateTextAr: 'تحريرا بغونتونج سندور، ١٠ أكتوبر ٢٠٢٦ / ١٤ ربيع الأول ١٤٤٨',
+  dateTextAr: 'تحريرا بغونتونج سندور، ١٠ أكتوبر ٢٠٢٦',
   waliKelasName: 'AMALIA NUR FARIHA, S.Pd.',
   waliKelasTitle: 'Wali Kelas',
   direkturName: "M. Ya'qub Unang, S.Ag",
