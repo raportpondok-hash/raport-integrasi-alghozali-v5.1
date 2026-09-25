@@ -382,26 +382,7 @@ export default function App() {
     }
   }, [config]);
 
-  // Save config and update per-class settings in classes state so wali kelas is not permanent
-  const handleSaveConfig = (newConf: SchoolConfig) => {
-    setConfig(newConf);
-    if (newConf.waliKelasName) {
-      setClasses((prevClasses) =>
-        prevClasses.map((c) => {
-          if (c.id === selectedClassId || c.nameLatin === newConf.classLatin) {
-            return {
-              ...c,
-              waliKelasName: newConf.waliKelasName,
-              nameLatin: newConf.classLatin || c.nameLatin,
-              nameAr: newConf.classAr || c.nameAr,
-            };
-          }
-          return c;
-        })
-      );
-    }
-  };
-
+  // V5.1 class catalog is immutable; class metadata comes from the SMA Mukim master.\n  const handleSaveConfig = (newConf: SchoolConfig) => {\n    setConfig(newConf);\n  };\n
   // Dynamically compute totals, averages, and ranks for ALL students grouped by class
   const calculatedStudents: CalculatedStudent[] = useMemo(() => {
     // 1. Calculate raw total and average for each student based on their class-specific curriculum
@@ -639,12 +620,9 @@ export default function App() {
     }
   };
 
-  const handleSaveSheetsUrl = (url: string, targetSchoolType?: SchoolType) => {
-    const sType = targetSchoolType || schoolType;
-    saveStoredSheetsUrl(url, sType);
-    if (sType === schoolType) {
-      setSheetsUrl(url);
-    }
+  const handleSaveSheetsUrl = (url: string, _targetSchoolType?: SchoolType) => {
+    saveStoredSheetsUrl(url);
+    setSheetsUrl(url);
   };
 
   const handleToggleAutoSync = (enabled: boolean) => {
