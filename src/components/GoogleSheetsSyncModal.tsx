@@ -26,7 +26,6 @@ import {
 import { User } from 'firebase/auth';
 import {
   GOOGLE_APPS_SCRIPT_CODE,
-  GOOGLE_APPS_SCRIPT_FULLDAY_CODE,
   testGoogleSheetsConnection,
   fetchAllScoresFromSheets,
   batchSyncAllToSheets,
@@ -610,7 +609,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
   };
 
   const handleCopyScript = () => {
-    const codeToCopy = selectedScriptType === 'fullday' ? GOOGLE_APPS_SCRIPT_FULLDAY_CODE : GOOGLE_APPS_SCRIPT_CODE;
+    const codeToCopy = GOOGLE_APPS_SCRIPT_CODE;
     navigator.clipboard.writeText(codeToCopy);
     setCopiedScript(true);
     setTimeout(() => setCopiedScript(false), 3000);
@@ -760,51 +759,15 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
               )}
             </div>
           )}
-          {/* Target School Selector */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-stone-100 rounded-xl border border-stone-200">
+          {/* V5.1 target is fixed: SMA Mukim. */}
+          <div className="flex items-center justify-between gap-2 p-3 bg-emerald-50 rounded-xl border border-emerald-200">
             <div>
-              <div className="text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                <span>Target Database:</span>
-                <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
-                    modalSchoolType === 'fullday'
-                      ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                      : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                  }`}
-                >
-                  {modalSchoolType === 'fullday' ? 'Non-Mukim (Full Day)' : 'Pondok (Mukim)'}
-                </span>
-              </div>
-              <div className="text-[11px] text-stone-500">
-                Data santri aktif: {relevantStudents.length} santri ({relevantClasses.length} kelas)
-              </div>
+              <div className="text-xs font-bold text-emerald-900">Target Database</div>
+              <div className="text-[11px] text-emerald-700">SMA Mukim · sumber nilai langsung dari sheet REKAP</div>
             </div>
-            <div className="flex items-center gap-1.5 bg-white p-1 rounded-lg border border-stone-300 shrink-0">
-              <button
-                type="button"
-                onClick={() => handleSwitchSchoolType('mukim')}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
-                  modalSchoolType === 'mukim'
-                    ? 'bg-emerald-700 text-white shadow-xs'
-                    : 'text-stone-600 hover:bg-stone-100'
-                }`}
-              >
-                <span>🕌</span>
-                <span>Pondok (Mukim)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSwitchSchoolType('fullday')}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
-                  modalSchoolType === 'fullday'
-                    ? 'bg-amber-600 text-white shadow-xs'
-                    : 'text-stone-600 hover:bg-stone-100'
-                }`}
-              >
-                <span>🏫</span>
-                <span>Non-Mukim (Full Day)</span>
-              </button>
-            </div>
+            <span className="text-[10px] px-2 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+              SMA MUKIM
+            </span>
           </div>
 
           {/* TAB 1: GOOGLE DIRECT OAUTH 2.0 (PRIMARY) */}
@@ -1256,7 +1219,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
               </div>
 
               <pre className="p-4 bg-stone-900 text-emerald-300 font-mono text-[11px] rounded-xl overflow-x-auto max-h-72 border border-stone-800">
-                {selectedScriptType === 'fullday' ? GOOGLE_APPS_SCRIPT_FULLDAY_CODE : GOOGLE_APPS_SCRIPT_CODE}
+                {GOOGLE_APPS_SCRIPT_CODE}
               </pre>
             </div>
           )}
