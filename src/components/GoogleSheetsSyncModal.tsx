@@ -72,7 +72,7 @@ interface GoogleSheetsSyncModalProps {
   classes?: ClassItem[];
   onApplyScoresFromSheets: (studentsScores: Record<string, Record<string, number>>) => void;
   lastSyncTime?: string;
-  isAdmin?: boolean;
+  adminAccess?: boolean;
   activeSchoolType?: SchoolType;
   onSelectSchoolType?: (type: SchoolType) => void;
   webAppUrlMukim?: string;
@@ -90,7 +90,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
   classes = [],
   onApplyScoresFromSheets,
   lastSyncTime,
-  isAdmin = false,
+  adminAccess = false,
   activeSchoolType = 'mukim',
   onSelectSchoolType,
   webAppUrlMukim,
@@ -98,7 +98,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
 }) => {
   const [modalSchoolType, setModalSchoolType] = useState<SchoolType>(activeSchoolType);
   const [selectedScriptType, setSelectedScriptType] = useState<SchoolType>(activeSchoolType);
-  const [activeTab, setActiveTab] = useState<'google_oauth' | 'settings' | 'tutorial' | 'script'>(isAdmin ? 'script' : 'google_oauth');
+  const [activeTab, setActiveTab] = useState<'google_oauth' | 'settings' | 'tutorial' | 'script'>(adminAccess ? 'script' : 'google_oauth');
 
   // Google OAuth State
   const [googleUser, setGoogleUser] = useState<User | null>(null);
@@ -145,8 +145,8 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
   // Admin tidak lagi mengatur URL Spreadsheet/Web App dari aplikasi.
   // Target spreadsheet dikelola server-side melalui Apps Script Script Properties.
   useEffect(() => {
-    if (isAdmin && isOpen) setActiveTab('script');
-  }, [isAdmin, isOpen]);
+    if (adminAccess && isOpen) setActiveTab('script');
+  }, [adminAccess, isOpen]);
 
   // Update fields when activeSchoolType or isOpen changes
   useEffect(() => {
@@ -176,7 +176,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
     return s.schoolType !== 'fullday';
   });
 
-  if (!isAdmin || !isOpen) return null;
+  if (!adminAccess || !isOpen) return null;
 
   const handleSwitchSchoolType = (type: SchoolType) => {
     setModalSchoolType(type);
@@ -649,7 +649,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
 
         {/* Navigation Tabs */}
         <div className="flex border-b border-stone-200 bg-stone-50 px-6 pt-2 shrink-0 gap-1 overflow-x-auto">
-          {!isAdmin && (
+          {!adminAccess && (
             <>
                       <button
                         type="button"
@@ -692,7 +692,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
             <span>Panduan Penggunaan</span>
           </button>
 
-          {isAdmin && (
+          {adminAccess && (
             <button
               type="button"
               onClick={() => setActiveTab('script')}
@@ -1239,7 +1239,7 @@ export const GoogleSheetsSyncModal: React.FC<GoogleSheetsSyncModalProps> = ({
           )}
 
           {/* TAB 4: KODE SKRIP APPS SCRIPT */}
-          {activeTab === 'script' && isAdmin && (
+          {activeTab === 'script' && adminAccess && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="font-bold text-stone-800">
