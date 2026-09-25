@@ -16,6 +16,7 @@ const CFG = {
   SCHOOL_TYPE: 'mukim',
   RAW_SHEET: 'Data_Nilai_Raport',
   TTL: 21600,
+  DEFAULT_TEACHER_PIN: '123456',
 };
 
 const SMA_MUKIM_SPREADSHEETS = {
@@ -60,6 +61,7 @@ function api_(e) {
 
     if (action === 'verifyAdmin') return admin_(p);
     if (action === 'verifyTeacherPin') return teacher_(p);
+    if (action === 'changePin') return changePin_(p);
 
     if (action === 'readScores' || action === 'getAll') {
       auth_(p);
@@ -174,9 +176,16 @@ function teacher_(p) {
     });
   }
 
-  const hash = ps_().getProperty(pk_(name, unit, role)) || '';
+  // PIN guru/wali pertama kali selalu 123456 jika belum pernah diubah.
+  // PIN tidak disimpan dalam bentuk plaintext; hanya hash SHA-256 yang dibuat
+  // saat login pertama/ketika setup belum memiliki property.
+  let hash = ps_().getProperty(pk_(name, unit, role)) || '';
 
-  if (!hash || hash_(String(p.pin || '')) !== hash) {
+  if (!hash) {
+    hash = hash_(CFG.DEFAULT_TEACHER_PIN);
+  }
+
+  if (hash_(String(p.pin || '')) !== hash) {
     return out_({
       status: 'success',
       success: false,
@@ -185,6 +194,53 @@ function teacher_(p) {
   }
 
   return session_(name, role);
+}
+
+function changePin_(p) {
+  const current = auth_(p);
+  const role = String(current.role || '').toLowerCase();
+  const unit = String(current.unit || '').toUpperCase();
+
+  if (unit !== 'SMA' || String(current.schoolType || '').toLowerCase() !== 'mukim') {
+    throw new Error('Perubahan PIN hanya untuk SMA Mukim');
+  }
+
+  const newPin = String(p.newPin || '');
+  if (!/^\\d{4,12}$/.test(newPin)) {
+    throw new Error('PIN baru harus 4-12 digit');
+  }
+
+  if (role === 'admin') {
+    const oldPin = String(p.currentPin || '');
+    const adminHash = ps_().getProperty('ADMIN_PIN_SHA256') || '';
+    if (!adminHash) throw new Error('ADMIN PIN belum dikonfigurasi');
+    if (hash_(oldPin) !== adminHash) throw new Error('PIN lama salah');
+    ps_().setProperty('ADMIN_PIN_SHA256', hash_(newPin));
+    return out_({status:'success', success:true, message:'PIN Admin berhasil diubah'});
+  }
+
+  if (role !== 'guru' && role !== 'wali_kelas') {
+    throw new Error('Role tidak diizinkan mengubah PIN');
+  }
+
+  const name = String(current.id || '').trim();
+  if (!name) throw new Error('Identitas pengguna tidak ditemukan');
+
+  const key = pk_(name, unit, role);
+  const storedHash = ps_().getProperty(key) || hash_(CFG.DEFAULT_TEACHER_PIN);
+  const oldPin = String(p.currentPin || '');
+
+  if (hash_(oldPin) !== storedHash) {
+    throw new Error('PIN lama salah');
+  }
+
+  ps_().setProperty(key, hash_(newPin));
+
+  return out_({
+    status:'success',
+    success:true,
+    message:'PIN berhasil diubah',
+  });
 }
 
 function session_(id, role) {
