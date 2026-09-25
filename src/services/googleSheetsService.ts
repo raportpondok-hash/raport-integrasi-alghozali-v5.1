@@ -103,10 +103,22 @@ function getTargetSpreadsheet_(params) {
 
 function setRaportSpreadsheetProperties() {
   var props = PropertiesService.getScriptProperties();
-  var required = ['SPREADSHEET_SMP_FULL_DAY_ID','SPREADSHEET_SMA_FULL_DAY_ID','SPREADSHEET_SMP_MUKIM_ID','SPREADSHEET_SMA_MUKIM_ID'];
-  var missing = required.filter(function(key) { return !props.getProperty(key); });
-  if (missing.length) throw new Error('Script Properties belum lengkap: ' + missing.join(', '));
-  return 'Konfigurasi 8 spreadsheet lengkap.';
+
+  // Empat Spreadsheet resmi V5.1 yang sudah dibuat.
+  // Jangan mengganti nama kelas MUKIM; program IPA/IPS dirouting di dalam
+  // Spreadsheet SMA MUKIM yang sama.
+  var ids = {
+    SPREADSHEET_SMP_FULL_DAY_ID: '1b1ucL5QYaqsUbLs2_gb01AIrs0IjROZM_J_fSsYfBkc',
+    SPREADSHEET_SMA_FULL_DAY_ID: '1o8eZD1ZRwYpyI6PpCJYu1z9aTuepGfaBw7k7fHV3bnM',
+    SPREADSHEET_SMP_MUKIM_ID: '1cnyu5kGQwQm1TQ37t1_iMoeEvQTgmoQTSv0StcWCpuM',
+    SPREADSHEET_SMA_MUKIM_ID: '1skr_nxM-C5Jj9jwOC1BIxsG7XZ_e3jmQRu0HEf4NcEs'
+  };
+
+  Object.keys(ids).forEach(function(key) {
+    props.setProperty(key, ids[key]);
+  });
+
+  return 'Konfigurasi 4 spreadsheet V5.1 berhasil disimpan.';
 }
 
 function handleRequest(e) {
