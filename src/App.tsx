@@ -92,7 +92,7 @@ export default function App() {
   // prevents a Temporal Dead Zone (TDZ) when the production bundle evaluates App.
   const [subjects] = useState<Subject[]>(INITIAL_SUBJECTS);
 
-  const [schoolType] = useState<SchoolType>('mukim');
+  const schoolType: SchoolType = 'mukim';
   const [activeJenjang] = useState<JenjangUnit>('SMA');
   const SMA_MUKIM_CLASS_IDS = new Set([
     '1int',
@@ -344,14 +344,14 @@ export default function App() {
   useEffect(() => {
     const cls = classes.find((c) => c.id === selectedClassId) || INITIAL_CLASSES.find((c) => c.id === selectedClassId);
     if (cls) {
-      const isFullDay = cls.schoolType === 'fullday';
+      const isFullDay = false;
       const officialWali = cls.waliKelasName || getWaliKelasForClass(cls.id, classes) || getWaliKelasForClass(cls.nameLatin, classes);
       setConfig((prev) => ({
         ...prev,
         classLatin: cls.nameLatin,
         classAr: cls.nameAr,
         waliKelasName: officialWali || prev.waliKelasName,
-        schoolType: isFullDay ? 'fullday' : 'mukim',
+        schoolType: 'mukim',
         subTitleId: isFullDay ? 'ASESMEN TENGAH SEMESTER GANJIL' : prev.subTitleId,
         schoolName: isFullDay
           ? (cls.nameLatin.toLowerCase().includes('smp') || cls.id.startsWith('vii') || cls.id.startsWith('viii') || cls.id.startsWith('ix') ? 'SMP ISLAM AL-GHOZALI' : 'SMA ISLAM AL GHOZALI')
@@ -572,7 +572,7 @@ export default function App() {
       const activeClass = classes.find((c) => c.id === selectedClassId);
       const dataset = {
         scope: {
-          schoolType,
+          schoolType: 'mukim',
           unit: activeJenjang,
           classId: selectedClassId,
           className: activeClass?.nameLatin || config.classLatin || selectedClassId,
@@ -942,7 +942,7 @@ export default function App() {
 
   const handleSelectJenjang = (unit: JenjangUnit) => {
     /* V5.1 fixed to SMA */
-    const classesForUnit = getClassesForUserAndJenjang(currentUser, unit, classes, schoolType);
+    const classesForUnit = getClassesForUserAndJenjang(currentUser, 'SMA', classes, 'mukim');
     if (classesForUnit.length > 0) {
       setSelectedClassId(classesForUnit[0].id);
       setSelectedClassStudentIndex(0);
@@ -957,7 +957,7 @@ export default function App() {
     const targetClass = classes.find((c) => c.id === classId) || INITIAL_CLASSES.find((c) => c.id === classId);
     if (targetClass) {
       const targetJenjang = getJenjangForClass(targetClass);
-      if (targetJenjang && targetJenjang !== activeJenjang) {
+      if (targetJenjang && targetJenjang !== 'SMA') {
         /* V5.1 fixed to SMA */
       }
     }
@@ -981,8 +981,7 @@ export default function App() {
     saveAuthUser(user);
     setCurrentUser(user);
 
-    const userSchoolType = user.schoolType;
-    const targetSchoolType = userSchoolType || schoolType;
+    const targetSchoolType: SchoolType = 'mukim';
     if (userSchoolType) {
       try {
         localStorage.setItem('kasyfud_darajat_active_school_type', userSchoolType);
