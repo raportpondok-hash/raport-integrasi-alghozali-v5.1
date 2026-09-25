@@ -34,7 +34,7 @@ interface LoginViewProps {
 
 export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSuccess }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('guru');
-  const [selectedUnit, setSelectedUnit] = useState<JenjangUnit>('SMP');
+  const [selectedUnit, setSelectedUnit] = useState<JenjangUnit>('SMA');
   const [selectedTeacherName, setSelectedTeacherName] = useState<string>('');
   const [teacherSearch, setTeacherSearch] = useState<string>('');
   const [adminPin, setAdminPin] = useState<string>('');
