@@ -54,6 +54,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
 }) => {
   const tableRef = useRef<HTMLTableElement>(null);
   const totalSubjects = Math.max(1, subjects.length);
+  const hasAnyScore = subjects.some((subject) => typeof scores[subject.id] === 'number' && !Number.isNaN(scores[subject.id]));
 
   // 6 Kolom Sesuai Template Resmi & Foto Referensi:
   // Col 0: No (الرقم)
@@ -98,8 +99,9 @@ export const ReportTable: React.FC<ReportTableProps> = ({
     const subject = subjects[row];
     if (!subject) return '';
     const rawScore = scores[subject.id];
-    const score = typeof rawScore === 'number' && !Number.isNaN(rawScore) ? rawScore : 0;
-    const arabicWords = customSubjectOverrides?.[subject.id]?.customTerbilang || numberToArabicWords(score);
+    const hasScore = typeof rawScore === 'number' && !Number.isNaN(rawScore);
+    const score = hasScore ? rawScore : 0;
+    const arabicWords = hasScore ? (customSubjectOverrides?.[subject.id]?.customTerbilang || numberToArabicWords(score)) : '';
 
     switch (col) {
       case 0:
@@ -109,9 +111,9 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       case 2:
         return customSubjectOverrides?.[subject.id]?.nameId || subject.nameId;
       case 3:
-        return toEasternArabicNumerals(score);
+        return hasScore ? toEasternArabicNumerals(score) : '';
       case 4:
-        return score;
+        return hasScore ? score : '';
       case 5:
         return arabicWords;
       default:
@@ -1511,7 +1513,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
               }}
             >
               <div style={{ width: '100%', height: '100%', minHeight: `${summaryHeight}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1px 2px', boxSizing: 'border-box', lineHeight: 'normal' }}>
-                {toEasternArabicNumerals(totalScore)}
+                {hasAnyScore ? toEasternArabicNumerals(totalScore) : ''}
               </div>
             </td>
             <td
@@ -1525,7 +1527,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
               }}
             >
               <div style={{ width: '100%', height: '100%', minHeight: `${summaryHeight}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1px 2px', boxSizing: 'border-box', lineHeight: 'normal' }}>
-                {totalScore}
+                {hasAnyScore ? totalScore : ''}
               </div>
             </td>
             <td
@@ -1582,7 +1584,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
               }}
             >
               <div style={{ width: '100%', height: '100%', minHeight: `${summaryHeight}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1px 2px', boxSizing: 'border-box', lineHeight: 'normal' }}>
-                {toEasternArabicNumerals(averageScore)}
+                {hasAnyScore ? toEasternArabicNumerals(averageScore) : ''}
               </div>
             </td>
             <td
@@ -1596,7 +1598,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
               }}
             >
               <div style={{ width: '100%', height: '100%', minHeight: `${summaryHeight}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1px 2px', boxSizing: 'border-box', lineHeight: 'normal' }}>
-                {averageScore}
+                {hasAnyScore ? averageScore : ''}
               </div>
             </td>
             <td
@@ -1667,7 +1669,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
               }}
             >
               <div style={{ width: '100%', height: '100%', minHeight: `${summaryHeight}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1px 2px', boxSizing: 'border-box', lineHeight: 'normal' }}>
-                {rank}
+                {hasAnyScore ? rank : ''}
               </div>
             </td>
             <td
