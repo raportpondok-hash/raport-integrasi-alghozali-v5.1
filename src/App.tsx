@@ -121,158 +121,7 @@ export default function App() {
       .filter((s) => SMA_MUKIM_CLASS_IDS.has(s.classId))
       .map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const }))
   );
-  /*
-  const legacyStudentsState = (() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_STUDENTS);
-      if (saved) {
-        const parsed: StudentRecord[] = JSON.parse(saved);
-        let updated = parsed;
-        const hasLevel3 = updated.some((s) => (s.classId || '').startsWith('3') && !(s.classId || '').startsWith('3int'));
-        if (!hasLevel3) {
-          updated = [...updated, ...MASTER_STUDENTS_3_SMP];
-        }
-        const hasLevel1Int = updated.some((s) => (s.classId || '') === '1int');
-        if (!hasLevel1Int) {
-          updated = [...updated, ...MASTER_STUDENTS_1_INTENSIF];
-        }
-        const hasLevel2Int = updated.some((s) => (s.classId || '').startsWith('2int'));
-        if (!hasLevel2Int) {
-          updated = [...updated, ...MASTER_STUDENTS_2_INTENSIF];
-        }
-        const hasLevel4 = updated.some((s) => (s.classId || '').startsWith('4'));
-        if (!hasLevel4) {
-          updated = [...updated, ...MASTER_STUDENTS_4_SMA];
-        }
-        const hasLevel3Int = updated.some((s) => (s.classId || '').startsWith('3int'));
-        if (!hasLevel3Int) {
-          updated = [...updated, ...MASTER_STUDENTS_3_INTENSIF];
-        }
-        const hasLevel5 = updated.some((s) => (s.classId || '').startsWith('5'));
-        if (!hasLevel5) {
-          updated = [...updated, ...MASTER_STUDENTS_5_SMA];
-        }
-        const hasLevel6 = updated.some((s) => (s.classId || '').startsWith('6'));
-        if (!hasLevel6) {
-          updated = [...updated, ...MASTER_STUDENTS_6_SMA];
-        }
-        const hasFullDay = updated.some((s) => s.schoolType === 'fullday' || (s.classId || '').includes('fd'));
-        if (!hasFullDay) {
-          updated = [...updated, ...MASTER_STUDENTS_FULL_DAY];
-        }
 
-        // Ensure Kelas VII.3 Full Day has the official 19 students from SMP Islam Al-Ghozali
-        const hasOfficialVii3 = updated.some(
-          (s) => s.classId === 'vii-3-fd-pi' && s.name.toUpperCase().includes('ADIBA')
-        );
-        if (!hasOfficialVii3) {
-          updated = updated.filter((s) => s.classId !== 'vii-3-fd-pi');
-          updated = [...updated, ...MASTER_STUDENTS_VII_3_FD];
-        }
-
-        // Migrate any legacy vii-6-fd-pa to official vii-5-fd-pa
-        updated = updated.map((s) =>
-          s.classId === 'vii-6-fd-pa' ? { ...s, classId: 'vii-5-fd-pa' } : s
-        );
-
-        // Ensure Kelas VII.5 Full Day has the official 21 students from SMP Islam Al-Ghozali
-        const hasOfficialVii5 = updated.some(
-          (s) => s.classId === 'vii-5-fd-pa' && s.name.toUpperCase().includes('ABDAN')
-        );
-        if (!hasOfficialVii5) {
-          updated = updated.filter((s) => s.classId !== 'vii-5-fd-pa' && s.classId !== 'vii-6-fd-pa');
-          updated = [...updated, ...MASTER_STUDENTS_VII_5_FD];
-        }
-
-        // Ensure Kelas VIII.4 Full Day has the official 35 students from SMP Islam Al-Ghozali
-        const hasOfficialViii4 = updated.some(
-          (s) => s.classId === 'viii-4-fd' && s.name.toUpperCase().includes('AQILLA')
-        );
-        if (!hasOfficialViii4) {
-          updated = updated.filter((s) => s.classId !== 'viii-4-fd');
-          updated = [...updated, ...MASTER_STUDENTS_VIII_4_FD];
-        }
-
-        // Ensure Kelas IX.4 Full Day has the official 17 students from SMP Islam Al-Ghozali
-        const hasOfficialIx4 = updated.some(
-          (s) => s.classId === 'ix-4-fd-pi' && s.name.toUpperCase().includes('AIRUM')
-        );
-        if (!hasOfficialIx4) {
-          updated = updated.filter((s) => s.classId !== 'ix-4-fd-pi');
-          updated = [...updated, ...MASTER_STUDENTS_IX_4_FD];
-        }
-
-        // Ensure Kelas IX.8 Full Day has the official 24 students from SMP Islam Al-Ghozali
-        const hasOfficialIx8 = updated.some(
-          (s) => s.classId === 'ix-8-fd-pa' && s.name.toUpperCase().includes('AFRIZAL')
-        );
-        if (!hasOfficialIx8) {
-          updated = updated.filter((s) => s.classId !== 'ix-8-fd-pa');
-          updated = [...updated, ...MASTER_STUDENTS_IX_8_FD];
-        }
-
-        // Ensure Kelas X-A Full Day has official 13 students with 21 subjects
-        const hasOfficialXA = updated.some(
-          (s) => s.classId === 'x-a-fd' && s.name.toUpperCase().includes('DELILAH') && s.scores?.al_quran !== undefined
-        );
-        if (!hasOfficialXA) {
-          updated = updated.filter((s) => s.classId !== 'x-a-fd');
-          updated = [...updated, ...MASTER_STUDENTS_X_A_FD];
-        }
-
-        // Ensure Kelas X-B Full Day has official 14 students with 21 subjects
-        const hasOfficialXB = updated.some(
-          (s) => s.classId === 'x-b-fd' && s.name.toUpperCase().includes('AHNAF') && s.scores?.al_quran !== undefined
-        );
-        if (!hasOfficialXB) {
-          updated = updated.filter((s) => s.classId !== 'x-b-fd');
-          updated = [...updated, ...MASTER_STUDENTS_X_B_FD];
-        }
-
-        // Ensure Kelas XI-IPA Full Day has official 17 students with 19 subjects
-        const hasOfficialXiIpa = updated.some(
-          (s) => s.classId === 'xi-ipa-fd' && s.name.toUpperCase().includes('ADE') && s.scores?.al_quran !== undefined
-        );
-        if (!hasOfficialXiIpa) {
-          updated = updated.filter((s) => s.classId !== 'xi-ipa-fd');
-          updated = [...updated, ...MASTER_STUDENTS_XI_IPA_FD];
-        }
-
-        // Ensure Kelas XI-IPS Full Day has official 16 students with 19 subjects
-        const hasOfficialXiIps = updated.some(
-          (s) => s.classId === 'xi-ips-fd' && s.name.toUpperCase().includes('ANNISA') && s.scores?.al_quran !== undefined
-        );
-        if (!hasOfficialXiIps) {
-          updated = updated.filter((s) => s.classId !== 'xi-ips-fd');
-          updated = [...updated, ...MASTER_STUDENTS_XI_IPS_FD];
-        }
-
-        // Ensure Kelas XII-IPA Full Day has official 8 students with 19 subjects
-        const hasOfficialXiiIpa = updated.some(
-          (s) => s.classId === 'xii-ipa-fd' && s.name.toUpperCase().includes('FINA') && s.scores?.al_quran !== undefined
-        );
-        if (!hasOfficialXiiIpa) {
-          updated = updated.filter((s) => s.classId !== 'xii-ipa-fd');
-          updated = [...updated, ...MASTER_STUDENTS_XII_IPA_FD];
-        }
-
-        // Ensure Kelas XII-IPS Full Day has official 9 students with 19 subjects
-        const hasOfficialXiiIps = updated.some(
-          (s) => s.classId === 'xii-ips-fd' && s.name.toUpperCase().includes('MIRANTI') && s.scores?.al_quran !== undefined
-        );
-        if (!hasOfficialXiiIps) {
-          updated = updated.filter((s) => s.classId !== 'xii-ips-fd');
-          updated = [...updated, ...MASTER_STUDENTS_XII_IPS_FD];
-        }
-
-        return updated;
-      }
-    } catch {
-      // ignore
-    }
-    return INITIAL_STUDENTS;
-  })();
-  */
 
   const [config, setConfig] = useState<SchoolConfig>(() => {
     const defaultWali = getWaliKelasForClass('1a') || 'AMALIA NUR FARHIFA, S.Pd.';
@@ -413,7 +262,7 @@ export default function App() {
   useEffect(() => {
     const nextUrl = getStoredSheetsUrl();
     setSheetsUrl(nextUrl);
-    setLastSyncTime(getStoredLastSync();
+    setLastSyncTime(getStoredLastSync());
   }, [activeJenjang, schoolType, selectedClassId]);
 
   // Excel Cell Selection & Formula Bar Sync
@@ -1110,7 +959,7 @@ export default function App() {
   };
 
   const handleSelectJenjang = (unit: JenjangUnit) => {
-    setActiveJenjang(unit);
+    /* V5.1 fixed to SMA */
     const classesForUnit = getClassesForUserAndJenjang(currentUser, unit, classes, schoolType);
     if (classesForUnit.length > 0) {
       setSelectedClassId(classesForUnit[0].id);
@@ -1127,7 +976,7 @@ export default function App() {
     if (targetClass) {
       const targetJenjang = getJenjangForClass(targetClass);
       if (targetJenjang && targetJenjang !== activeJenjang) {
-        setActiveJenjang(targetJenjang);
+        /* V5.1 fixed to SMA */
       }
     }
     setSelectedClassId(classId);
@@ -1156,12 +1005,12 @@ export default function App() {
       try {
         localStorage.setItem('kasyfud_darajat_active_school_type', userSchoolType);
       } catch {}
-      setSheetsUrl(getStoredSheetsUrl();
+      setSheetsUrl(getStoredSheetsUrl());
       setLastSyncTime(getStoredLastSync();
     }
 
-    const initialUnit: JenjangUnit = user.unit || user.availableUnits?.[0] || 'SMP';
-    setActiveJenjang(initialUnit);
+    const initialUnit: JenjangUnit = 'SMA';
+    /* V5.1 fixed to SMA */
 
     const initialClasses = getClassesForUserAndJenjang(user, initialUnit, classes, targetSchoolType);
 
