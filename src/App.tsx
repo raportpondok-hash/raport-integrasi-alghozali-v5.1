@@ -92,7 +92,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 
-const STORAGE_KEY_STUDENTS = 'kasyfud_darajat_students_smp_v4';
+const STORAGE_KEY_STUDENTS = 'raport_integrasi_pts_2026_2027_empty_template_v1';
 const STORAGE_KEY_CONFIG = 'kasyfud_darajat_config_smp_v4';
 const STORAGE_KEY_CLASSES = 'kasyfud_darajat_classes_smp_v4';
 const STORAGE_KEY_OVERRIDES = 'kasyfud_darajat_overrides_v1';
@@ -643,7 +643,8 @@ export default function App() {
         const val = studentScores[sub.id];
         return sum + (typeof val === 'number' && !isNaN(val) ? val : 0);
       }, 0);
-      const avg = classSubjects.length > 0 ? Math.round(total / classSubjects.length) : 0;
+      const scoredCount = classSubjects.filter((sub) => typeof studentScores[sub.id] === 'number' && !isNaN(studentScores[sub.id])).length;
+      const avg = scoredCount > 0 ? Math.round(total / scoredCount) : 0;
       return {
         ...std,
         scores: studentScores,
@@ -943,7 +944,7 @@ export default function App() {
   const syncDebounceTimerRef = useRef<any>(null);
 
   const flushPendingSyncQueue = () => {
-    if (!currentUser?.role === 'admin' || !sheetsUrl || !isAutoSyncEnabled || pendingSyncQueueRef.current.size === 0) return;
+    if (!currentUser || !sheetsUrl || !isAutoSyncEnabled || pendingSyncQueueRef.current.size === 0) return;
 
     const itemsToSend = Array.from(pendingSyncQueueRef.current.values());
     pendingSyncQueueRef.current.clear();
@@ -969,7 +970,7 @@ export default function App() {
 
   // Tarik data nilai dari Google Spreadsheet saat pertama kali buka aplikasi & interval santai 5 menit
   useEffect(() => {
-    if (!currentUser?.role === 'admin' || !sheetsUrl || !sheetsUrl.trim().startsWith('http')) return;
+    if (!currentUser || !sheetsUrl || !sheetsUrl.trim().startsWith('http')) return;
 
     const pullLatestScores = () => {
       setSyncStatus('syncing');
@@ -1013,7 +1014,7 @@ export default function App() {
     );
 
     // 2. Masukkan ke antrean debounced untuk sinkronisasi Google Sheets
-    if (currentUser?.role === 'admin' && sheetsUrl && isAutoSyncEnabled) {
+    if (currentUser && sheetsUrl && isAutoSyncEnabled) {
       const targetStudent = students.find((s) => s.id === studentId);
       if (targetStudent) {
         const key = `${studentId}-${subjectId}`;
