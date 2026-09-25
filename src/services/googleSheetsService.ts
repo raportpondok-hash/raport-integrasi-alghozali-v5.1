@@ -45,6 +45,10 @@ function getAdminSessionTokenLocal(): string {
   }
 }
 
+function getTeacherSessionTokenLocal(): string {
+  try { return sessionStorage.getItem('raport_teacher_session_token') || ''; } catch { return ''; }
+}
+
 export interface GoogleSheetsSyncResult {
   success: boolean;
   message: string;
@@ -2068,6 +2072,7 @@ export async function saveSingleScoreToSheets(
     className?: string;
     teacherName?: string;
     waliKelas?: string;
+    role?: 'guru' | 'wali_kelas' | 'admin';
   }
 ): Promise<GoogleSheetsSyncResult> {
   if (!webAppUrl || !webAppUrl.trim().startsWith('http')) {
@@ -2078,6 +2083,8 @@ export async function saveSingleScoreToSheets(
     const body = JSON.stringify({
       action: 'updateScore',
       adminSessionToken: getAdminSessionTokenLocal(),
+      teacherSessionToken: getTeacherSessionTokenLocal(),
+      role: payload.role || 'guru',
       ...payload,
     });
 
@@ -2188,6 +2195,7 @@ export async function batchSyncAllToSheets(
           body: JSON.stringify({
             action: 'batchSync',
             adminSessionToken: getAdminSessionTokenLocal(),
+            teacherSessionToken: getTeacherSessionTokenLocal(),
             schoolType: (() => { try { return new URL(studentUrl).searchParams.get('schoolType') || undefined; } catch { return undefined; } })(),
             unit: (() => { try { return new URL(studentUrl).searchParams.get('unit') || undefined; } catch { return undefined; } })(),
             classId: std.classId || '',
@@ -2281,6 +2289,8 @@ export async function saveMultipleScoresToSheets(
     const body = JSON.stringify({
       action: 'saveSubjectScores',
       adminSessionToken: getAdminSessionTokenLocal(),
+      teacherSessionToken: getTeacherSessionTokenLocal(),
+      role: 'guru',
       items,
       classId,
       className,
