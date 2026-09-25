@@ -62,7 +62,7 @@ import { SessionLockOverlay } from './components/SessionLockOverlay';
 import { UserGuideModal } from './components/UserGuideModal';
 import { getSubjectsForClass, ensureStudentScoresForClass, MASTER_SUBJECTS_CATALOG } from './data/curriculumSubjects';
 import { getWaliKelasForClass } from './data/waliKelasDatabase';
-import { getSavedAuthUser, saveAuthUser, getClassesForUserAndJenjang, getJenjangForClass, clearAdminSessionToken } from './utils/authHelpers';
+import { getSavedAuthUser, saveAuthUser, getClassesForUserAndJenjang, getJenjangForClass, clearAdminSessionToken, clearTeacherSessionToken } from './utils/authHelpers';
 import { exportRaportToPdf } from './utils/exportHelpers';
 import { ReportDesignConfig, DEFAULT_DESIGN_CONFIG, getSavedDesignConfig, saveDesignConfig } from './data/reportDesign';
 import { ExcelTableToolbar, SelectedColumnKey } from './components/ExcelTableToolbar';
@@ -1267,6 +1267,7 @@ export default function App() {
 
   const handleLogout = () => {
     clearAdminSessionToken();
+    clearTeacherSessionToken();
     saveAuthUser(null);
     setCurrentUser(null);
   };
