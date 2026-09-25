@@ -104,10 +104,6 @@ export default function App() {
   // Resolve role flags at the top of the component so every callback/effect/render
   // sees initialized bindings. Keeping these above the early login return also
   // prevents a Temporal Dead Zone (TDZ) when the production bundle evaluates App.
-  const isAdmin = currentUser?.role === 'admin';
-  const isWaliKelas = currentUser?.role === 'wali_kelas';
-  const isGuru = currentUser?.role === 'guru';
-
   const [subjects] = useState<Subject[]>(INITIAL_SUBJECTS);
 
   const [schoolType, setSchoolType] = useState<SchoolType>(() => {
@@ -947,7 +943,7 @@ export default function App() {
   const syncDebounceTimerRef = useRef<any>(null);
 
   const flushPendingSyncQueue = () => {
-    if (!isAdmin || !sheetsUrl || !isAutoSyncEnabled || pendingSyncQueueRef.current.size === 0) return;
+    if (!currentUser?.role === 'admin' || !sheetsUrl || !isAutoSyncEnabled || pendingSyncQueueRef.current.size === 0) return;
 
     const itemsToSend = Array.from(pendingSyncQueueRef.current.values());
     pendingSyncQueueRef.current.clear();
@@ -973,7 +969,7 @@ export default function App() {
 
   // Tarik data nilai dari Google Spreadsheet saat pertama kali buka aplikasi & interval santai 5 menit
   useEffect(() => {
-    if (!isAdmin || !sheetsUrl || !sheetsUrl.trim().startsWith('http')) return;
+    if (!currentUser?.role === 'admin' || !sheetsUrl || !sheetsUrl.trim().startsWith('http')) return;
 
     const pullLatestScores = () => {
       setSyncStatus('syncing');
@@ -1017,7 +1013,7 @@ export default function App() {
     );
 
     // 2. Masukkan ke antrean debounced untuk sinkronisasi Google Sheets
-    if (isAdmin && sheetsUrl && isAutoSyncEnabled) {
+    if (currentUser?.role === 'admin' && sheetsUrl && isAutoSyncEnabled) {
       const targetStudent = students.find((s) => s.id === studentId);
       if (targetStudent) {
         const key = `${studentId}-${subjectId}`;
@@ -1354,16 +1350,16 @@ export default function App() {
             <div className="hidden md:flex items-center gap-2 bg-stone-800/90 border border-stone-700/80 px-2.5 py-1.5 rounded-xl">
               <div
                 className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs ${
-                  isAdmin
+                  currentUser?.role === 'admin'
                     ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
-                    : isWaliKelas
+                    : currentUser?.role === 'wali_kelas'
                     ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40'
                     : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
                 }`}
               >
-                {isAdmin ? (
+                {currentUser?.role === 'admin' ? (
                   <ShieldCheck size={16} />
-                ) : isWaliKelas ? (
+                ) : currentUser?.role === 'wali_kelas' ? (
                   <GraduationCap size={16} />
                 ) : (
                   <UserCheck size={16} />
@@ -1374,9 +1370,9 @@ export default function App() {
                   <span className="truncate max-w-[130px]">{currentUser.name}</span>
                 </div>
                 <span className="text-[10px] text-stone-400 block font-medium leading-tight">
-                  {isAdmin
+                  {currentUser?.role === 'admin'
                     ? 'Administrator'
-                    : isWaliKelas
+                    : currentUser?.role === 'wali_kelas'
                     ? `Wali ${currentUser.homeroomClassName || currentUser.unit || 'Kelas'}`
                     : `Guru • ${currentUser.unit || 'Pengampu'}`}
                 </span>
@@ -1397,7 +1393,7 @@ export default function App() {
               >
                 <div className="relative flex items-center justify-center">
                   <Sliders size={14} className={isFeatureMenuOpen ? 'text-white' : 'text-emerald-400'} />
-                  {isAdmin && sheetsUrl && (
+                  {currentUser?.role === 'admin' && sheetsUrl && (
                     <span
                       className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${
                         syncStatus === 'syncing'
@@ -1429,16 +1425,16 @@ export default function App() {
                   <div className="px-4 py-3 bg-stone-950/60 flex items-center gap-3">
                     <div
                       className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
-                        isAdmin
+                        currentUser?.role === 'admin'
                           ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
-                          : isWaliKelas
+                          : currentUser?.role === 'wali_kelas'
                           ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40'
                           : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
                       }`}
                     >
-                      {isAdmin ? (
+                      {currentUser?.role === 'admin' ? (
                         <ShieldCheck size={18} />
-                      ) : isWaliKelas ? (
+                      ) : currentUser?.role === 'wali_kelas' ? (
                         <GraduationCap size={18} />
                       ) : (
                         <UserCheck size={18} />
@@ -1447,9 +1443,9 @@ export default function App() {
                     <div className="min-w-0 flex-1">
                       <div className="text-xs font-bold text-stone-100 truncate">{currentUser.name}</div>
                       <div className="text-[11px] text-stone-400 font-medium truncate">
-                        {isAdmin
+                        {currentUser?.role === 'admin'
                           ? 'Administrator Sistem'
-                          : isWaliKelas
+                          : currentUser?.role === 'wali_kelas'
                           ? `Wali ${currentUser.homeroomClassName || currentUser.unit || 'Kelas'}`
                           : `Guru • ${currentUser.unit || 'Pengampu'}`}
                       </div>
@@ -1465,7 +1461,7 @@ export default function App() {
                       Fitur & Alat Raport
                     </div>
 
-                    {isAdmin && (
+                    {currentUser?.role === 'admin' && (
                       <button
                         type="button"
                         onClick={() => {
@@ -1489,7 +1485,7 @@ export default function App() {
                       </button>
                     )}
 
-                    {isAdmin && (
+                    {currentUser?.role === 'admin' && (
                       <button
                         type="button"
                         onClick={() => {
@@ -1512,7 +1508,7 @@ export default function App() {
                       </button>
                     )}
 
-                    {isAdmin && (
+                    {currentUser?.role === 'admin' && (
                       <button
                         type="button"
                         onClick={() => {
@@ -1596,7 +1592,7 @@ export default function App() {
                       </div>
                     </button>
 
-                    {isAdmin && (
+                    {currentUser?.role === 'admin' && (
                       <button
                         type="button"
                         onClick={() => {
@@ -1619,7 +1615,7 @@ export default function App() {
                       </button>
                     )}
 
-                    {isAdmin && (
+                    {currentUser?.role === 'admin' && (
                       <button
                         type="button"
                         onClick={() => {
@@ -1676,7 +1672,7 @@ export default function App() {
         <div className="border-t border-stone-800/80 bg-stone-900/95 backdrop-blur-xs">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
             {/* TAB 0: Data Master Siswa (Admin Only) */}
-            {isAdmin && (
+            {currentUser?.role === 'admin' && (
               <button
                 type="button"
                 onClick={() => setActiveTab('master')}
@@ -1706,7 +1702,7 @@ export default function App() {
             </button>
 
             {/* TAB 2: Cetak Raport Santri (Admin & Wali Kelas) */}
-            {(isAdmin || isWaliKelas) && (
+            {(currentUser?.role === 'admin' || currentUser?.role === 'wali_kelas') && (
               <button
                 type="button"
                 onClick={() => setActiveTab('raport')}
@@ -1722,7 +1718,7 @@ export default function App() {
             )}
 
             {/* TAB 3: Rekapitulasi Nilai (Admin & Wali Kelas) */}
-            {(isAdmin || isWaliKelas) && (
+            {(currentUser?.role === 'admin' || currentUser?.role === 'wali_kelas') && (
               <button
                 type="button"
                 onClick={() => setActiveTab('rekap')}
@@ -1738,7 +1734,7 @@ export default function App() {
             )}
 
             {/* TAB: Pengisian Sikap (Admin & Wali Kelas) */}
-            {(isAdmin || isWaliKelas) && (
+            {(currentUser?.role === 'admin' || currentUser?.role === 'wali_kelas') && (
               <button
                 type="button"
                 onClick={() => setActiveTab('sikap')}
@@ -1754,7 +1750,7 @@ export default function App() {
             )}
 
             {/* TAB 4: Muatan Mata Pelajaran (Admin Only) */}
-            {isAdmin && (
+            {currentUser?.role === 'admin' && (
               <button
                 type="button"
                 onClick={() => setActiveTab('muatan')}
@@ -1770,7 +1766,7 @@ export default function App() {
             )}
 
             {/* TAB 5: Database Guru Mata Pelajaran (Admin Only) */}
-            {isAdmin && (
+            {currentUser?.role === 'admin' && (
               <button
                 type="button"
                 onClick={() => setActiveTab('databaseGuru')}
@@ -1857,7 +1853,7 @@ export default function App() {
             currentUser={currentUser}
             activeJenjang={activeJenjang}
             onSelectJenjang={handleSelectJenjang}
-            onOpenSyncModal={isAdmin ? () => setIsSyncModalOpen(true) : undefined}
+            onOpenSyncModal={currentUser?.role === 'admin' ? () => setIsSyncModalOpen(true) : undefined}
             sheetsUrl={sheetsUrl}
             syncStatus={syncStatus}
           />
@@ -1884,7 +1880,7 @@ export default function App() {
 
                     <div className="flex items-center gap-2 flex-wrap">
                       {/* Toggle Mode Edit Desain Langsung (Ala Excel) - Admin Only */}
-                      {isAdmin && (
+                      {currentUser?.role === 'admin' && (
                         <button
                           type="button"
                           onClick={() => setIsEditingMode((prev) => !prev)}
@@ -1943,7 +1939,7 @@ export default function App() {
                   </div>
 
                   {/* External Excel Toolbar (Placed OUTSIDE the certificate, only in Edit Mode - Admin Only) */}
-                  {isAdmin && isEditingMode && (
+                  {currentUser?.role === 'admin' && isEditingMode && (
                     <div className="w-full max-w-[800px] mb-3">
                       <ExcelTableToolbar
                         designConfig={designConfig || DEFAULT_DESIGN_CONFIG}
@@ -2053,7 +2049,7 @@ export default function App() {
                 setActiveTab('raport');
               }}
               onOpenBatchPrint={handleOpenBatchPrint}
-              onOpenSyncModal={isAdmin ? () => setIsSyncModalOpen(true) : undefined}
+              onOpenSyncModal={currentUser?.role === 'admin' ? () => setIsSyncModalOpen(true) : undefined}
               onResetData={handleResetToDefault}
               currentUser={currentUser}
               schoolType={schoolType}
@@ -2077,7 +2073,7 @@ export default function App() {
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
         config={config}
-        isAdmin={isAdmin}
+        currentUser?.role === 'admin'={currentUser?.role === 'admin'}
         onSave={handleSaveConfig}
       />
 
@@ -2120,7 +2116,7 @@ export default function App() {
         currentUser={currentUser}
       />
 
-      {isAdmin && (
+      {currentUser?.role === 'admin' && (
       <GoogleSheetsSyncModal
                 isOpen={isSyncModalOpen}
                 onClose={() => setIsSyncModalOpen(false)}
@@ -2132,7 +2128,7 @@ export default function App() {
                 classes={classes}
                 onApplyScoresFromSheets={handleApplyScoresFromSheets}
                 lastSyncTime={lastSyncTime}
-                isAdmin={isAdmin}
+                currentUser?.role === 'admin'={currentUser?.role === 'admin'}
                 activeSchoolType={schoolType}
                 onSelectSchoolType={handleSelectSchoolType}
                 webAppUrlMukim={getStoredSheetsUrl('mukim')}
