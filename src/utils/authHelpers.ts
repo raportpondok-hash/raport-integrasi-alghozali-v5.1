@@ -15,6 +15,7 @@ import { DAFTAR_WALI_KELAS, WaliKelasEntry } from '../data/waliKelasDatabase';
 
 export const AUTH_USER_KEY = 'kasyfud_darajat_auth_user_v1';
 export const ADMIN_SESSION_TOKEN_KEY = 'raport_admin_session_token';
+export const TEACHER_SESSION_TOKEN_KEY = 'raport_teacher_session_token';
 
 /**
  * Legacy compatibility helpers.
