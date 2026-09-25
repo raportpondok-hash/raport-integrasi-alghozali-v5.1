@@ -6,7 +6,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { INITIAL_SUBJECTS, INITIAL_SCHOOL_CONFIG, INITIAL_STUDENTS, INITIAL_CLASSES, INITIAL_FULLDAY_CONFIG } from './data/initialData';
+import { INITIAL_SUBJECTS, INITIAL_SCHOOL_CONFIG, INITIAL_STUDENTS, INITIAL_CLASSES } from './data/initialData';
 import { MASTER_STUDENTS_3_SMP } from './data/masterStudents3SMP';
 import { MASTER_STUDENTS_1_INTENSIF } from './data/masterStudents1Intensif';
 import { MASTER_STUDENTS_2_INTENSIF } from './data/masterStudents2Intensif';
@@ -14,21 +14,6 @@ import { MASTER_STUDENTS_4_SMA } from './data/masterStudents4SMA';
 import { MASTER_STUDENTS_5_SMA } from './data/masterStudents5SMA';
 import { MASTER_STUDENTS_6_SMA } from './data/masterStudents6SMA';
 import { MASTER_STUDENTS_3_INTENSIF } from './data/masterStudents3Intensif';
-import {
-  MASTER_STUDENTS_FULL_DAY,
-  MASTER_STUDENTS_VII_3_FD,
-  MASTER_STUDENTS_VII_5_FD,
-  MASTER_STUDENTS_VII_6_FD,
-  MASTER_STUDENTS_VIII_4_FD,
-  MASTER_STUDENTS_IX_4_FD,
-  MASTER_STUDENTS_IX_8_FD,
-  MASTER_STUDENTS_X_A_FD,
-  MASTER_STUDENTS_X_B_FD,
-  MASTER_STUDENTS_XI_IPA_FD,
-  MASTER_STUDENTS_XI_IPS_FD,
-  MASTER_STUDENTS_XII_IPA_FD,
-  MASTER_STUDENTS_XII_IPS_FD,
-} from './data/masterStudentsFullDay';
 import { Subject, StudentRecord, CalculatedStudent, SchoolConfig, ClassItem, AuthUser, JenjangUnit, SchoolType } from './types';
 import { ReportCertificate } from './components/ReportCertificate';
 import { SidebarControls } from './components/SidebarControls';
@@ -107,67 +92,20 @@ export default function App() {
   // prevents a Temporal Dead Zone (TDZ) when the production bundle evaluates App.
   const [subjects] = useState<Subject[]>(INITIAL_SUBJECTS);
 
-  const [schoolType, setSchoolType] = useState<SchoolType>(() => {
-    const savedUser = getSavedAuthUser();
-    if (savedUser?.schoolType) return savedUser.schoolType;
-    try {
-      const saved = localStorage.getItem('kasyfud_darajat_active_school_type');
-      if (saved === 'fullday' || saved === 'mukim') return saved;
-    } catch {}
-    return 'mukim';
-  });
+  const [schoolType] = useState<SchoolType>('mukim');
+  const [activeJenjang] = useState<JenjangUnit>('SMA');
+  const SMA_MUKIM_CLASS_IDS = new Set([
+    '1int',
+    '2int-a', '2int-b',
+    '3int-a', '3int-b',
+    '4a', '4b', '4c',
+    '5a', '5b', '5c', '5d',
+    '6a', '6b', '6c', '6d',
+  ]);
 
-  const [activeJenjang, setActiveJenjang] = useState<JenjangUnit>(() => {
-    const savedUser = getSavedAuthUser();
-    if (savedUser?.unit) return savedUser.unit;
-    if (savedUser?.availableUnits && savedUser.availableUnits.length > 0) return savedUser.availableUnits[0];
-    return 'SMA';
-  });
-  
-  const [classes, setClasses] = useState<ClassItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_CLASSES);
-      if (saved) {
-        const parsed: ClassItem[] = JSON.parse(saved);
-        const hasLevel3 = parsed.some((c) => c.id.startsWith('3') && !c.id.startsWith('3int'));
-        const hasLevel1Int = parsed.some((c) => c.id === '1int');
-        const hasLevel2Int = parsed.some((c) => c.id.startsWith('2int'));
-        const hasLevel4 = parsed.some((c) => c.id.startsWith('4') || c.level === '4');
-        const hasLevel3Int = parsed.some((c) => c.id.startsWith('3int') || c.level === '3int');
-        const hasLevel5 = parsed.some((c) => c.id.startsWith('5') || c.level === '5');
-        const hasLevel6 = parsed.some((c) => c.id.startsWith('6') || c.level === '6');
-        const has2IntIpa = parsed.some((c) => c.id === '2int-a' && c.nameLatin.includes('IPA'));
-        const has3IntIpa = parsed.some((c) => c.id === '3int-a' && c.nameLatin.includes('IPA'));
-        const hasFullDayClass = parsed.some((c) => c.schoolType === 'fullday' || (c.id || '').includes('fd'));
-        const fullDayCount = parsed.filter((c) => c.schoolType === 'fullday' || (c.id || '').includes('fd')).length;
-        const hasOldNmNaming = parsed.some(
-          (c) => (c.nameLatin || '').includes('(NM)') || (c.nameLatin || '').includes('Non Mukim')
-        );
-        const hasVii5 = parsed.some((c) => c.id === 'vii-5-fd-pa');
-        if (
-          !hasLevel3 ||
-          !hasLevel1Int ||
-          !hasLevel2Int ||
-          !hasLevel4 ||
-          !hasLevel3Int ||
-          !hasLevel5 ||
-          !hasLevel6 ||
-          !has2IntIpa ||
-          !has3IntIpa ||
-          !hasFullDayClass ||
-          fullDayCount < 11 ||
-          hasOldNmNaming ||
-          !hasVii5
-        ) {
-          return INITIAL_CLASSES;
-        }
-        return parsed;
-      }
-    } catch {
-      // ignore
-    }
-    return INITIAL_CLASSES;
-  });
+  const [classes] = useState<ClassItem[]>(() =>
+    INITIAL_CLASSES.filter((c) => SMA_MUKIM_CLASS_IDS.has(c.id))
+  );
 
   // Active class ID e.g. '1a', '1b', '1d', '1e', '1-int-a', 'x-a-fd'
   const [selectedClassId, setSelectedClassId] = useState<string>('3int-b');
@@ -179,7 +117,9 @@ export default function App() {
   // Nilai selalu kosong saat aplikasi/reload dibuka dan diambil ulang dari Spreadsheet
   // ketika kelas dibuka.
   const [students, setStudents] = useState<StudentRecord[]>(() =>
-    INITIAL_STUDENTS.map((s) => ({ ...s, scores: {} }))
+    INITIAL_STUDENTS
+      .filter((s) => SMA_MUKIM_CLASS_IDS.has(s.classId))
+      .map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const }))
   );
   /*
   const legacyStudentsState = (() => {
@@ -412,7 +352,7 @@ export default function App() {
       return 'mukim';
     })();
     const savedUser = getSavedAuthUser();
-    return getStoredSheetsUrl(initialType, savedUser?.unit || 'SMP', savedUser?.homeroomClassId || savedUser?.assignedClassIds?.[0] || '');
+    return getStoredSheetsUrl();
   });
   const [isAutoSyncEnabled, setIsAutoSyncEnabled] = useState<boolean>(() => {
     try {
@@ -431,7 +371,7 @@ export default function App() {
       } catch {}
       return 'mukim';
     })();
-    return getStoredLastSync(initialType);
+    return getStoredLastSync();
   });
   const [isSyncModalOpen, setIsSyncModalOpen] = useState<boolean>(false);
   const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
@@ -468,31 +408,12 @@ export default function App() {
     };
   }, [isFeatureMenuOpen]);
 
-  const handleSelectSchoolType = (type: SchoolType) => {
-    setSchoolType(type);
-    try {
-      localStorage.setItem('kasyfud_darajat_active_school_type', type);
-    } catch {}
-    const newUrl = getStoredSheetsUrl(type, activeJenjang, selectedClassId);
-    setSheetsUrl(newUrl);
-    setLastSyncTime(getStoredLastSync(type));
-
-    // Spreadsheet target follows the selected school type + jenjang.
-  // Choose first class of this type
-    const matchingClasses = classes.filter((c) =>
-      type === 'fullday' ? c.schoolType === 'fullday' : c.schoolType !== 'fullday'
-    );
-    if (matchingClasses.length > 0) {
-      setSelectedClassId(matchingClasses[0].id);
-      setSelectedClassStudentIndex(0);
-    }
-  };
-
+  const handleSelectSchoolType = (_type: SchoolType) => { /* V5.1 is SMA Mukim only. */ };
   // Keep the server-side spreadsheet target aligned with the active jenjang.
   useEffect(() => {
-    const nextUrl = getStoredSheetsUrl(schoolType, activeJenjang, selectedClassId);
+    const nextUrl = getStoredSheetsUrl();
     setSheetsUrl(nextUrl);
-    setLastSyncTime(getStoredLastSync(schoolType));
+    setLastSyncTime(getStoredLastSync();
   }, [activeJenjang, schoolType, selectedClassId]);
 
   // Excel Cell Selection & Formula Bar Sync
@@ -933,7 +854,7 @@ export default function App() {
     );
     const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
     setLastSyncTime(now);
-    saveStoredLastSync(now, schoolType);
+    saveStoredLastSync(now);
     setSyncStatus('synced');
   };
 
@@ -961,7 +882,7 @@ export default function App() {
         setSyncStatus('synced');
         const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         setLastSyncTime(now);
-        saveStoredLastSync(now, schoolType);
+        saveStoredLastSync(now);
       } else {
         setSyncStatus('error');
       }
@@ -1039,7 +960,7 @@ export default function App() {
       if (result.success) {
         const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         setLastSyncTime(now);
-        saveStoredLastSync(now, schoolType);
+        saveStoredLastSync(now);
       }
     } catch {
       setSyncStatus('error');
@@ -1214,7 +1135,7 @@ export default function App() {
   };
 
   const filteredClassesForUser = useMemo(() => {
-    return getClassesForUserAndJenjang(currentUser, activeJenjang, classes, schoolType);
+    return getClassesForUserAndJenjang(currentUser, 'SMA', classes, 'mukim');
   }, [currentUser, activeJenjang, classes, schoolType]);
 
   // Ensure selectedClassId is valid within current filtered classes
@@ -1232,12 +1153,11 @@ export default function App() {
     const userSchoolType = user.schoolType;
     const targetSchoolType = userSchoolType || schoolType;
     if (userSchoolType) {
-      setSchoolType(userSchoolType);
       try {
         localStorage.setItem('kasyfud_darajat_active_school_type', userSchoolType);
       } catch {}
-      setSheetsUrl(getStoredSheetsUrl(userSchoolType));
-      setLastSyncTime(getStoredLastSync(userSchoolType));
+      setSheetsUrl(getStoredSheetsUrl();
+      setLastSyncTime(getStoredLastSync();
     }
 
     const initialUnit: JenjangUnit = user.unit || user.availableUnits?.[0] || 'SMP';
@@ -2133,8 +2053,8 @@ export default function App() {
                 adminAccess={currentUser?.role === 'admin'}
                 activeSchoolType={schoolType}
                 onSelectSchoolType={handleSelectSchoolType}
-                webAppUrlMukim={getStoredSheetsUrl('mukim')}
-                webAppUrlFullDay={getStoredSheetsUrl('fullday')}
+                webAppUrlMukim={getStoredSheetsUrl()}
+                webAppUrlFullDay={getStoredSheetsUrl()}
               />
       )}
     </div>
