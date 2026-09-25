@@ -83,36 +83,27 @@ function doPost(e) {
 
 function getTargetSpreadsheet_(params) {
   var props = PropertiesService.getScriptProperties();
-  var schoolType = String((params && (params.schoolType || params.school_type)) || 'mukim').toLowerCase();
-  var unit = String((params && (params.unit || params.jenjang)) || 'SMP').toUpperCase();
-  var classId = String((params && (params.classId || params.class_id)) || '').toLowerCase();
+  var schoolType = String((params && (params.schoolType || params.school_type)) || 'mukim').trim().toLowerCase();
+  var unit = String((params && (params.unit || params.jenjang)) || 'SMP').trim().toUpperCase();
 
+  // V5.1 memakai tepat empat Spreadsheet fisik.
+  // Program IPA/IPS dan nama kelas MUKIM hanya menentukan konteks data,
+  // bukan membuat Spreadsheet baru.
   var key;
-  if (schoolType === 'fullday') {
-    if (unit === 'SMP') {
-      key = 'SPREADSHEET_SMP_FULL_DAY_ID';
-    } else {
-      // SMA Full Day dipisahkan berdasarkan program/tingkat.
-      if (classId.indexOf('xi-ipa') === 0) key = 'SPREADSHEET_SMA_XI_IPA_FULL_DAY_ID';
-      else if (classId.indexOf('xi-ips') === 0) key = 'SPREADSHEET_SMA_XI_IPS_FULL_DAY_ID';
-      else if (classId.indexOf('xii-ipa') === 0) key = 'SPREADSHEET_SMA_XII_IPA_FULL_DAY_ID';
-      else if (classId.indexOf('xii-ips') === 0) key = 'SPREADSHEET_SMA_XII_IPS_FULL_DAY_ID';
-      else key = 'SPREADSHEET_SMA_X_FULL_DAY_ID';
-    }
-  } else if (unit === 'SMA') {
-    key = 'SPREADSHEET_SMA_MUKIM_PONDOK_ID';
-  } else {
-    key = 'SPREADSHEET_SMP_PONDOK_ID';
-  }
+  if (schoolType === 'fullday' && unit === 'SMP') key = 'SPREADSHEET_SMP_FULL_DAY_ID';
+  else if (schoolType === 'fullday' && unit === 'SMA') key = 'SPREADSHEET_SMA_FULL_DAY_ID';
+  else if (schoolType === 'mukim' && unit === 'SMP') key = 'SPREADSHEET_SMP_MUKIM_ID';
+  else if (schoolType === 'mukim' && unit === 'SMA') key = 'SPREADSHEET_SMA_MUKIM_ID';
+  else throw new Error('Konteks sekolah tidak valid: ' + schoolType + ' / ' + unit);
 
   var spreadsheetId = props.getProperty(key);
-  if (!spreadsheetId) throw new Error('Spreadsheet belum dikonfigurasi untuk ' + schoolType + ' / ' + unit + ' / ' + classId + '. Set Script Property ' + key + '.');
+  if (!spreadsheetId) throw new Error('Spreadsheet belum dikonfigurasi untuk ' + schoolType + ' / ' + unit + '. Set Script Property ' + key + '.');
   return SpreadsheetApp.openById(spreadsheetId);
 }
 
 function setRaportSpreadsheetProperties() {
   var props = PropertiesService.getScriptProperties();
-  var required = ['SPREADSHEET_SMP_FULL_DAY_ID','SPREADSHEET_SMP_PONDOK_ID','SPREADSHEET_SMA_X_FULL_DAY_ID','SPREADSHEET_SMA_XI_IPA_FULL_DAY_ID','SPREADSHEET_SMA_XI_IPS_FULL_DAY_ID','SPREADSHEET_SMA_XII_IPA_FULL_DAY_ID','SPREADSHEET_SMA_XII_IPS_FULL_DAY_ID','SPREADSHEET_SMA_MUKIM_PONDOK_ID'];
+  var required = ['SPREADSHEET_SMP_FULL_DAY_ID','SPREADSHEET_SMA_FULL_DAY_ID','SPREADSHEET_SMP_MUKIM_ID','SPREADSHEET_SMA_MUKIM_ID'];
   var missing = required.filter(function(key) { return !props.getProperty(key); });
   if (missing.length) throw new Error('Script Properties belum lengkap: ' + missing.join(', '));
   return 'Konfigurasi 8 spreadsheet lengkap.';
