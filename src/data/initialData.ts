@@ -381,8 +381,8 @@ export const INITIAL_SUBJECTS: Subject[] = [
 ];
 
 export const INITIAL_SCHOOL_CONFIG: SchoolConfig = {
-  institutionName: 'YPI AL-GHOZALI',
-  schoolName: 'PONDOK MODERN AL-GHOZALI',
+  institutionName: 'Rapot Integrasi Pondok',
+  schoolName: 'Rapot Integrasi Pondok',
   subTitleId: 'PENILAIAN TENGAH SEMESTER GANJIL TAHUN PELAJARAN 2026-2027',
   titleAr: 'كَشْفُ الدَّرَجَاتِ',
   subTitleAr: 'للامتحان التّحريري لفصل الدّراسي الأوّل',
@@ -447,16 +447,16 @@ export const INITIAL_FULLDAY_CONFIG: SchoolConfig = {
 };
 
 export const INITIAL_STUDENTS: StudentRecord[] = [
-  ...MASTER_STUDENTS_SMP.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_2_SMP.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_3_SMP.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_1_INTENSIF.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_2_INTENSIF.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_4_SMA.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_3_INTENSIF.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_5_SMA.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_6_SMA.map((s) => ({ ...s, schoolType: 'mukim' as const })),
-  ...MASTER_STUDENTS_FULL_DAY,
+  ...MASTER_STUDENTS_SMP.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_2_SMP.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_3_SMP.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_1_INTENSIF.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_2_INTENSIF.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_4_SMA.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_3_INTENSIF.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_5_SMA.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_6_SMA.map((s) => ({ ...s, scores: {}, schoolType: 'mukim' as const })),
+  ...MASTER_STUDENTS_FULL_DAY.map((s) => ({ ...s, scores: {} })),
 ];
 
 const OLD_STUDENTS: StudentRecord[] = [
