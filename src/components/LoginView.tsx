@@ -34,7 +34,7 @@ interface LoginViewProps {
 
 export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSuccess }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('guru');
-  const [selectedUnit, setSelectedUnit] = useState<JenjangUnit>('SMA');
+  const selectedUnit: JenjangUnit = 'SMA';
   const [selectedTeacherName, setSelectedTeacherName] = useState<string>('');
   const [teacherSearch, setTeacherSearch] = useState<string>('');
   const [adminPin, setAdminPin] = useState<string>('');
@@ -44,12 +44,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSucce
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const teachersList = useMemo(() => {
-    try { return getTeachersByJenjang(selectedUnit) || []; } catch { return []; }
-  }, [selectedUnit]);
+    try { return getTeachersByJenjang('SMA') || []; } catch { return []; }
+  }, []);
 
   const waliKelasList = useMemo(() => {
-    try { return getWaliKelasByJenjang(selectedUnit) || []; } catch { return []; }
-  }, [selectedUnit]);
+    try { return getWaliKelasByJenjang('SMA') || []; } catch { return []; }
+  }, []);
 
   const availableTeachers = useMemo(() => {
     if (selectedRole === 'wali_kelas') {
@@ -131,7 +131,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSucce
         role: 'admin',
         name: 'Administrator Raport',
         unit: selectedUnit,
-        availableUnits: ['SMP', 'SMA', 'TMMIA'],
+        availableUnits: ['SMA'],
+        schoolType: 'mukim',
       };
       saveAuthUser(adminUser);
       setIsLoading(false);
@@ -168,7 +169,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ classes = [], onLoginSucce
       role: selectedRole,
       name: selectedTeacherName,
       unit: details.availableUnits.includes(selectedUnit) ? selectedUnit : details.availableUnits[0],
-      availableUnits: details.availableUnits,
+      availableUnits: ['SMA'],
+      schoolType: 'mukim',
       assignedClassIds: details.assignedClassIds,
       assignedClassIdsByUnit: details.assignedClassIdsByUnit,
       assignedSubjectNames: details.assignedSubjectNames,
