@@ -98,6 +98,13 @@ export const ReportHeader: React.FC<ReportHeaderProps> = ({
           </div>
 
           <div
+            className="text-[10px] sm:text-xs font-extrabold text-stone-700 tracking-wide mt-1 select-none"
+            dir="ltr"
+          >
+            {config.institutionName || 'Rapot Integrasi Pondok'}
+          </div>
+
+          <div
             className="font-bold text-stone-900 mt-1 select-none leading-tight"
             style={{
               fontSize: `${subTitleFontSize}pt`,
