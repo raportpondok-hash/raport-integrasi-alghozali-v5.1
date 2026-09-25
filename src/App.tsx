@@ -982,13 +982,11 @@ export default function App() {
     setCurrentUser(user);
 
     const targetSchoolType: SchoolType = 'mukim';
-    if (userSchoolType) {
-      try {
-        localStorage.setItem('kasyfud_darajat_active_school_type', userSchoolType);
-      } catch {}
-      setSheetsUrl(getStoredSheetsUrl());
-      setLastSyncTime(getStoredLastSync());
-    }
+    try {
+      localStorage.setItem('kasyfud_darajat_active_school_type', targetSchoolType);
+    } catch {}
+    setSheetsUrl(getStoredSheetsUrl());
+    setLastSyncTime(getStoredLastSync());
 
     const initialUnit: JenjangUnit = 'SMA';
     /* V5.1 fixed to SMA */
@@ -1040,60 +1038,20 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
                   <h1 className="font-bold text-sm sm:text-base tracking-wide text-white">
-                    {schoolType === 'fullday' ? 'Raport Al-Ghozali' : 'Kasyfud Darajat'}
+                    Rapot Integrasi Pondok
                   </h1>
                   <span className="text-[9px] sm:text-[10px] bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 px-1.5 py-0.5 rounded-md font-extrabold tracking-wider">
                     V5.1.0
                   </span>
                 </div>
-                {schoolType === 'mukim' ? (
-                  <span className="font-arabic text-emerald-400 font-bold text-base leading-none">
-                    (كَشْفُ الدَّرَجَاتِ)
-                  </span>
-                ) : (
-                  <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                    Full Day
-                  </span>
-                )}
+                <span className="font-arabic text-emerald-400 font-bold text-base leading-none">
+                  (كَشْفُ الدَّرَجَاتِ)
+                </span>
               </div>
               <p className="text-[11px] text-stone-400 font-medium hidden sm:block">
-                {schoolType === 'fullday'
-                  ? `SMP & SMA Islam Al-Ghozali • TA ${config.academicYearLatin}`
-                  : `Pondok Modern Al-Ghozali • TA ${config.academicYearLatin}`}
+                {`Pondok Modern Al-Ghozali • TA ${config.academicYearLatin}`}
               </p>
             </div>
-          </div>
-
-          {/* School Type Switcher (Pondok Mukim vs Full Day) */}
-          <div className="flex items-center bg-stone-950/80 p-1 rounded-xl border border-stone-700/80 shadow-inner shrink-0">
-            <button
-              type="button"
-              onClick={() => handleSelectSchoolType('mukim')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                schoolType === 'mukim'
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'text-stone-400 hover:text-stone-200'
-              }`}
-              title="Sistem Pondok Modern (Mukim) - Format Kasyfud Darajat"
-            >
-              <span>🕌</span>
-              <span className="hidden sm:inline">Pondok (Mukim)</span>
-              <span className="sm:hidden">Mukim</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSelectSchoolType('fullday')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                schoolType === 'fullday'
-                  ? 'bg-amber-600 text-white shadow-xs'
-                  : 'text-stone-400 hover:text-stone-200'
-              }`}
-              title="Sistem Sekolah Full Day - Format Raport Nasional"
-            >
-              <span>🏫</span>
-              <span className="hidden sm:inline">Full Day</span>
-              <span className="sm:hidden">Full Day</span>
-            </button>
           </div>
 
           {/* User Profile Badge & Dropdown Trigger */}
