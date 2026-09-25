@@ -100,6 +100,14 @@ const STORAGE_KEY_CLASS_SUBJECTS = 'kasyfud_darajat_class_subjects_v1';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => getSavedAuthUser());
+
+  // Resolve role flags at the top of the component so every callback/effect/render
+  // sees initialized bindings. Keeping these above the early login return also
+  // prevents a Temporal Dead Zone (TDZ) when the production bundle evaluates App.
+  const isAdmin = currentUser?.role === 'admin';
+  const isWaliKelas = currentUser?.role === 'wali_kelas';
+  const isGuru = currentUser?.role === 'guru';
+
   const [subjects] = useState<Subject[]>(INITIAL_SUBJECTS);
 
   const [schoolType, setSchoolType] = useState<SchoolType>(() => {
@@ -1270,10 +1278,6 @@ export default function App() {
   if (!currentUser) {
     return <LoginView classes={classes} onLoginSuccess={handleLoginSuccess} />;
   }
-
-  const isAdmin = currentUser.role === 'admin';
-  const isWaliKelas = currentUser.role === 'wali_kelas';
-  const isGuru = currentUser.role === 'guru';
 
   return (
     <div className="min-h-screen bg-stone-100 flex flex-col selection:bg-emerald-200">
