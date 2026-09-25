@@ -99,8 +99,8 @@ export const TeacherGradingView: React.FC<TeacherGradingViewProps> = ({
 
   const isWaliKelas = currentUser?.role === 'wali_kelas';
   const isGuru = currentUser?.role === 'guru';
-  const availableUnits: JenjangUnit[] = currentUser?.availableUnits?.filter(u => u === 'SMP' || u === 'SMA') || (isAdmin ? ['SMP', 'SMA'] : ['SMP']);
-  const effectiveJenjang: JenjangUnit = activeJenjang || (currentClass ? getJenjangForClass(currentClass) : 'SMP');
+  const availableUnits: JenjangUnit[] = currentUser?.availableUnits?.filter(u => u === 'SMP' || u === 'SMA') || (isAdmin ? ['SMP', 'SMA'] : ['SMA']);
+  const effectiveJenjang: JenjangUnit = activeJenjang || (currentClass ? getJenjangForClass(currentClass) : 'SMA');
   const currentSubject = subjects.find((s) => s.id === selectedSubjectId) || subjects[0] || {
     id: 's1',
     order: 1,
