@@ -78,6 +78,30 @@ export function getAdminSessionToken(): string {
   }
 }
 
+export function getTeacherSessionToken(): string {
+  try { return sessionStorage.getItem(TEACHER_SESSION_TOKEN_KEY) || ''; } catch { return ''; }
+}
+
+export function clearTeacherSessionToken(): void {
+  try { sessionStorage.removeItem(TEACHER_SESSION_TOKEN_KEY); } catch { /* ignore */ }
+}
+
+export async function verifyTeacherPin(teacherName: string, unit: JenjangUnit, role: Exclude<UserRole, 'admin'>, pin: string): Promise<boolean> {
+  const safePin = String(pin || '').trim();
+  if (!teacherName.trim() || !safePin) return false;
+  const webAppUrl = getStoredSheetsUrl('mukim', unit === 'TMMIA' ? 'SMA' : unit);
+  if (!webAppUrl) return false;
+  try {
+    const response = await fetch(webAppUrl, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'verifyTeacherPin', teacherName, unit, role, pin: safePin }), cache: 'no-store' });
+    if (!response.ok) return false;
+    const data = await response.json();
+    if (data?.success === true && data?.authenticated === true && data?.sessionToken) {
+      try { sessionStorage.setItem(TEACHER_SESSION_TOKEN_KEY, String(data.sessionToken)); } catch { /* ignore */ }
+      return true;
+    }
+    return false;
+  } catch { return false; }
+}
 export function clearAdminSessionToken(): void {
   try {
     sessionStorage.removeItem(ADMIN_SESSION_TOKEN_KEY);
