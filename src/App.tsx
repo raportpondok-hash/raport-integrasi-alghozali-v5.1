@@ -382,7 +382,11 @@ export default function App() {
     }
   }, [config]);
 
-  // V5.1 class catalog is immutable; class metadata comes from the SMA Mukim master.\n  const handleSaveConfig = (newConf: SchoolConfig) => {\n    setConfig(newConf);\n  };\n
+  // V5.1 class catalog is immutable; class metadata comes from the SMA Mukim master.
+  const handleSaveConfig = (newConf: SchoolConfig) => {
+    setConfig(newConf);
+  };
+
   // Dynamically compute totals, averages, and ranks for ALL students grouped by class
   const calculatedStudents: CalculatedStudent[] = useMemo(() => {
     // 1. Calculate raw total and average for each student based on their class-specific curriculum
