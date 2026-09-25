@@ -121,7 +121,7 @@ export default function App() {
     const savedUser = getSavedAuthUser();
     if (savedUser?.unit) return savedUser.unit;
     if (savedUser?.availableUnits && savedUser.availableUnits.length > 0) return savedUser.availableUnits[0];
-    return 'SMP';
+    return 'SMA';
   });
   
   const [classes, setClasses] = useState<ClassItem[]>(() => {
@@ -170,7 +170,7 @@ export default function App() {
   });
 
   // Active class ID e.g. '1a', '1b', '1d', '1e', '1-int-a', 'x-a-fd'
-  const [selectedClassId, setSelectedClassId] = useState<string>('1a');
+  const [selectedClassId, setSelectedClassId] = useState<string>('3int-b');
 
   // Active subject ID for teacher grading e.g. 's1' (Tamrin Lughoh)
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('s1');
