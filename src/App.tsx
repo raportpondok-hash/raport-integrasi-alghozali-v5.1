@@ -1026,9 +1026,12 @@ export default function App() {
 
       // Jangan pernah memasukkan nilai hasil save ke state React.
       // Ini sengaja membuat input kosong setelah tersimpan.
-      setStudents((prev) => prev.map((s) =>
-        s.id === studentId ? { ...s, scores: {} } : s
-      ));
+      setStudents((prev) => prev.map((s) => {
+        if (s.id !== studentId) return s;
+        const scores = { ...s.scores };
+        delete scores[subjectId];
+        return { ...s, scores };
+      }));
 
       setSyncStatus(result.success ? 'synced' : 'error');
       if (result.success) {
