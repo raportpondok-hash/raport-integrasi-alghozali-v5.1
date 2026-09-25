@@ -2058,45 +2058,24 @@ export async function fetchAllScoresFromSheets(webAppUrl: string): Promise<{
  * Pull only the currently opened class.
  * This is the normal read path for the source-of-truth score model.
  */
-export async function fetchScoresForClassFromSheets(
-  webAppUrl: string,
-  classId: string,
-): Promise<{
-  success: boolean;
-  message: string;
-  studentsScores?: Record<string, Record<string, number>>;
-  rowCount?: number;
-}> {
-  if (!webAppUrl || !webAppUrl.trim().startsWith('http')) {
-    return { success: false, message: 'URL Web App belum diatur' };
-  }
+export async function fetchScoresForClassFromSheets(webAppUrl: string, classId: string): Promise<{ success: boolean; message: string; studentsScores?: Record<string, Record<string, number>>; rowCount?: number; }> {
+  if (!webAppUrl || !webAppUrl.trim().startsWith('http')) return { success: false, message: 'URL Web App belum diatur' };
   try {
     const url = new URL(webAppUrl.trim());
     url.searchParams.set('action', 'readScores');
     url.searchParams.set('unit', 'SMA');
     url.searchParams.set('schoolType', 'mukim');
     url.searchParams.set('classId', classId);
+    const adminToken = getAdminSessionTokenLocal();
+    const teacherToken = getTeacherSessionTokenLocal();
+    if (adminToken) url.searchParams.set('adminSessionToken', adminToken);
+    if (teacherToken) url.searchParams.set('teacherSessionToken', teacherToken);
     url.searchParams.set('_ts', String(Date.now()));
 
-    const res = await fetch(url.toString(), {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-store',
-      headers: {
-        'X-Raport-Session': getAdminSessionTokenLocal() || getTeacherSessionTokenLocal(),
-      },
-    });
+    const res = await fetch(url.toString(), { method: 'GET', mode: 'cors', cache: 'no-store' });
     if (!res.ok) return { success: false, message: `HTTP Error: ${res.status}` };
-
     const json = await res.json();
-    if (json.status === 'success') {
-      return {
-        success: true,
-        message: `Berhasil memuat nilai kelas ${classId} dari Google Spreadsheet`,
-        studentsScores: json.studentsScores || {},
-        rowCount: json.rowCount || 0,
-      };
-    }
+    if (json.status === 'success') return { success: true, message: 'Nilai kelas berhasil dimuat', studentsScores: json.studentsScores || {}, rowCount: json.rowCount || 0 };
     return { success: false, message: json.message || 'Gagal memuat nilai kelas' };
   } catch (err: any) {
     return { success: false, message: `Error koneksi: ${err.message || String(err)}` };
