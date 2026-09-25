@@ -1024,14 +1024,16 @@ export default function App() {
         role: currentUser.role,
       });
 
-      // Jangan pernah memasukkan nilai hasil save ke state React.
-      // Ini sengaja membuat input kosong setelah tersimpan.
-      setStudents((prev) => prev.map((s) => {
-        if (s.id !== studentId) return s;
-        const scores = { ...s.scores };
-        delete scores[subjectId];
-        return { ...s, scores };
-      }));
+      if (result.success) {
+        // Nilai yang sudah tersimpan langsung dikeluarkan dari state frontend.
+        // Saat kelas dibuka kembali, nilai akan dipanggil ulang dari Spreadsheet.
+        setStudents((prev) => prev.map((s) => {
+          if (s.id !== studentId) return s;
+          const scores = { ...s.scores };
+          delete scores[subjectId];
+          return { ...s, scores };
+        }));
+      }
 
       setSyncStatus(result.success ? 'synced' : 'error');
       if (result.success) {
