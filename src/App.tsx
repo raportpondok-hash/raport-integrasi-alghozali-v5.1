@@ -2073,7 +2073,7 @@ export default function App() {
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
         config={config}
-        currentUser?.role === 'admin'={currentUser?.role === 'admin'}
+        isAdmin={currentUser?.role === 'admin'}
         onSave={handleSaveConfig}
       />
 
@@ -2128,7 +2128,7 @@ export default function App() {
                 classes={classes}
                 onApplyScoresFromSheets={handleApplyScoresFromSheets}
                 lastSyncTime={lastSyncTime}
-                currentUser?.role === 'admin'={currentUser?.role === 'admin'}
+                isAdmin={currentUser?.role === 'admin'}
                 activeSchoolType={schoolType}
                 onSelectSchoolType={handleSelectSchoolType}
                 webAppUrlMukim={getStoredSheetsUrl('mukim')}
