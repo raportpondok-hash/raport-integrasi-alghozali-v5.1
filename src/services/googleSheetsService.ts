@@ -2110,6 +2110,8 @@ export async function saveSingleScoreToSheets(
   try {
     const body = JSON.stringify({
       action: 'updateScore',
+      unit: 'SMA',
+      schoolType: 'mukim',
       adminSessionToken: getAdminSessionTokenLocal(),
       teacherSessionToken: getTeacherSessionTokenLocal(),
       role: payload.role || 'guru',
